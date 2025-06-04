@@ -43,7 +43,7 @@ public function index(Request $request)
             'prenom'         => 'required|string|max:255',
             'date_naissance' => 'required|date',
             'telephone'      => 'nullable|string|max:20',
-            'universite'     => 'nullable|string|max:255',
+            'universite'     => 'required|string|max:255',
             'statut'         => 'required|string|in:Sportif,Artiste',
             'discipline'     => 'required|string|max:255',
             'photo_path'     => 'required|image|mimes:jpg,jpeg,png|max:2048',
@@ -64,9 +64,14 @@ public function index(Request $request)
         }
 
         // 3) Stockage du fichier uploadé dans 'public/photos_etudiants'
-        if ($request->hasFile('photo_path')) {
-            $path = $request->file('photo_path')->store('photos_etudiants', 'public');
-            $validated['photo_path'] = $path;
+       if ($request->hasFile('photo_path')) {
+            $file = $request->file('photo_path');
+            // Génère un nom unique (timestamp + nom original)
+            $filename = time() . '_' . $file->getClientOriginalName();
+            // Déplace le fichier directement dans public/storage/photos_etudiants
+            $file->move(public_path('storage/photos_etudiants'), $filename);
+            // Stocke le chemin relatif pour la BD (sans 'storage/')
+            $validated['photo_path'] = 'photos_etudiants/' . $filename;
         }
 
         // 4) Génération d'un code numérique de 4 caractères
