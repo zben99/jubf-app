@@ -52,6 +52,7 @@ public function index(Request $request)
         $exists = Etudiant::where('nom', $validated['nom'])
             ->where('prenom', $validated['prenom'])
             ->where('date_naissance', $validated['date_naissance'])
+            ->where('telephone', $validated['telephone'])
             ->exists();
 
         if ($exists) {
