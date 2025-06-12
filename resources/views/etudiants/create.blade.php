@@ -173,6 +173,7 @@
                                     <option value="">-- Sélectionnez --</option>
                                     <option value="Sportif" {{ old('statut') == 'Sportif' ? 'selected' : '' }}>Sportif</option>
                                     <option value="Artiste" {{ old('statut') == 'Artiste' ? 'selected' : '' }}>Artiste</option>
+                                     <option value="Encadreur" {{ old('statut') == 'Encadreur' ? 'selected' : '' }}>Encadreur</option>
                                 </select>
                                 @error('statut') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>

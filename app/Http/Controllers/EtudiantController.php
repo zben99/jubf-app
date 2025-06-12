@@ -41,14 +41,13 @@ public function index(Request $request)
         $validated = $request->validate([
             'nom'            => 'required|string|max:255',
             'prenom'         => 'required|string|max:255',
-            'date_naissance' => 'required|date',
+            'date_naissance' => 'required_unless:statut,Encadreur|date',
             'telephone'      => 'nullable|string|max:20',
             'universite'     => 'required|string|max:255',
-            'statut'         => 'required|string|in:Sportif,Artiste',
+            'statut'         => 'required|string|in:Sportif,Artiste,Encadreur',
             'discipline'     => 'required|string|max:255',
             'photo_path'     => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
-
         // 2) Vérification de doublon sur (nom, prenom, date_naissance)
         $exists = Etudiant::where('nom', $validated['nom'])
             ->where('prenom', $validated['prenom'])
