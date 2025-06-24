@@ -59,15 +59,19 @@
     <img src="{{asset('images/logo_cenou-removebg.png')}}" alt="Logo CENOU">
   </header>
 
-  <main>
-    <h1>Jeux Universitaires du Burkina Faso (JUBF)</h1>
-    <p>
-      Bienvenue sur la plateforme officielle d’inscription aux JUBF 2025 ! <br>
-      Tous les étudiants participants peuvent ici faire leur demande de badge et attestation de participation.
-    </p>
+<main>
+  <h1>Jeux Universitaires du Burkina Faso (JUBF)</h1>
+  <p>
+    Bienvenue sur la plateforme officielle d’inscription aux JUBF 2025 ! <br>
+    Tous les étudiants participants peuvent ici faire leur demande de badge et attestation de participation.
+  </p>
 
+  @if (Route::has('etudiants.create'))
     <a href="{{ route('etudiants.create') }}" class="btn-inscrire">S’inscrire maintenant</a>
-  </main>
+  @else
+    <p style="color: red; font-weight: bold;">Les inscriptions sont actuellement closes.</p>
+  @endif
+</main>
 
   <footer>
     <p>© 2025 CENOU - Tous droits réservés</p>

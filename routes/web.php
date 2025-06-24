@@ -24,10 +24,18 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::get('/etudiants/create', [EtudiantController::class, 'create'])->name('etudiants.create');
+//Route::get('/etudiants/create', [EtudiantController::class, 'create'])->name('etudiants.create');
 Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants.store');
 
 Route::get('/etudiants', [EtudiantController::class, 'index'])->name('etudiants.index');
 
+Route::get('/etudiants/badge/{id}', [EtudiantController::class, 'generate'])->name('badge.generate');
+
+Route::get('/badges/{id}', [EtudiantController::class, 'showBadge'])->name('badges.show');
+
+Route::get('/badges/download/batch', [EtudiantController::class, 'telechargerBadges'])->name('badges.download.batch');
+
+
+Route::get('/badges/download/batch1', [EtudiantController::class, 'telechargerBadges1'])->name('badges.download.batch1');
 
 require __DIR__.'/auth.php';

@@ -45,6 +45,7 @@
                                     <th>Université</th>
                                     <th>Statut</th>
                                     <th>Discipline</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -65,6 +66,12 @@
                                         <td>{{ $etudiant->universite }}</td>
                                         <td>{{ $etudiant->statut }}</td>
                                         <td>{{ $etudiant->discipline }}</td>
+
+                                        <td>
+                                            <a href="{{ route('badges.show', $etudiant->id) }}" class="btn btn-sm btn-outline-primary">
+                                                Générer badge
+                                            </a>
+                                        </td>
                                     </tr>
                                 @empty
 

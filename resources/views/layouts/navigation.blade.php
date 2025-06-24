@@ -15,6 +15,14 @@
                      <x-nav-link :href="route('etudiants.index')" :active="request()->routeIs('etudiants.index')">
                         {{ __('Liste des inscriptions') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('badges.download.batch')" :active="request()->routeIs('badges.download.batch')">
+                        {{ __('Telechargement ') }}
+                    </x-nav-link>
+
+                     <x-nav-link :href="route('badges.download.batch1')" :active="request()->routeIs('badges.download.batch1')">
+                        {{ __('Telechargement CO') }}
+                    </x-nav-link>
                 </div>
             </div>
 
