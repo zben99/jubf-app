@@ -54,8 +54,8 @@
 
 
 
-                $universite = trim($attestation->universite);
-                $universiteFormatee = $universite;
+                $universite = trim($attestation->university->name ?? '');
+                $universiteFormatee = $universite ?: 'N/A';
 
                 // Normaliser pour comparaison
                 $debut = Str::lower(Str::ascii($universite)); // ignore accents

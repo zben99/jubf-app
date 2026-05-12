@@ -10,7 +10,17 @@ class Etudiant extends Model
        use HasFactory;
 
 protected $fillable = [
-    'nom', 'prenom', 'date_naissance', 'telephone',
-    'universite', 'statut', 'discipline', 'photo_path', 'code'
+    'nom', 'prenom','ine', 'matricule', 'date_naissance', 'telephone',
+    'university_id', 'statut', 'discipline_id', 'photo_path', 'code'
 ];
+
+public function university()
+{
+    return $this->belongsTo(University::class);
+}
+
+public function discipline()
+{
+    return $this->belongsTo(Discipline::class);
+}
 }

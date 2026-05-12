@@ -52,9 +52,9 @@
             @endif
             <div class="nom">{{ $etudiant->nom }}</div>
             <div class="prenom">{{ $etudiant->prenom }}</div>
-            <div class="universite">{{ $etudiant->universite }}</div>
+            <div class="universite">{{ $etudiant->university->name ?? 'N/A' }}</div>
             <div class="statut">{{ $etudiant->statut }}</div>
-            <div class="discipline">{{ $etudiant->discipline }}</div>
+            <div class="discipline">{{ $etudiant->discipline->name ?? 'N/A' }}</div>
         </div>
     @endforeach
 </div>

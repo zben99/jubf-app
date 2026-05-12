@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use ZipArchive;
 use App\Models\Etudiant;
+use App\Models\University;
+use App\Models\Discipline;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Intervention\Image\Image;
@@ -22,15 +24,23 @@ public function index(Request $request)
 {
     $search = $request->input('search');
 
-    $etudiants = Etudiant::query()
+    $etudiants = Etudiant::with(['university', 'discipline'])
         ->when($search, function ($query, $search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nom', 'like', "%{$search}%")
                   ->orWhere('prenom', 'like', "%{$search}%")
+                  ->orWhere('ine', 'like', "%{$search}%")
+                  ->orWhere('matricule', 'like', "%{$search}%")
                   ->orWhere('telephone', 'like', "%{$search}%")
-                  ->orWhere('universite', 'like', "%{$search}%")
                   ->orWhere('statut', 'like', "%{$search}%")
-                  ->orWhere('discipline', 'like', "%{$search}%");
+                  ->orWhereHas('university', function ($uq) use ($search) {
+                      $uq->where('name', 'like', "%{$search}%")
+                         ->orWhere('acronym', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('discipline', function ($dq) use ($search) {
+                      $dq->where('name', 'like', "%{$search}%")
+                         ->orWhere('category', 'like', "%{$search}%");
+                  });
             });
         })
         ->orderBy('nom')
@@ -41,7 +51,10 @@ public function index(Request $request)
 
     public function create()
     {
-        return view('etudiants.create');
+        $universities = University::where('is_active', true)->orderBy('name')->get();
+        $disciplines = Discipline::where('is_active', true)->orderBy('name')->get();
+
+        return view('etudiants.create', compact('universities', 'disciplines'));
     }
 
     public function store(Request $request)
@@ -50,11 +63,13 @@ public function index(Request $request)
         $validated = $request->validate([
             'nom'            => 'required|string|max:255',
             'prenom'         => 'required|string|max:255',
+            'ine'            => 'nullable|string|max:255|unique:etudiants,ine|required_without:matricule',
+            'matricule'      => 'nullable|string|max:255|unique:etudiants,matricule|required_without:ine',
             'date_naissance' => 'required_unless:statut,Encadreur|date',
             'telephone'      => 'nullable|string|max:20',
-            'universite'     => 'required|string|max:255',
+            'university_id'  => 'required|exists:universities,id',
             'statut'         => 'required|string|in:Sportif,Artiste,Encadreur',
-            'discipline'     => 'required|string|max:255',
+            'discipline_id'  => 'required|exists:disciplines,id',
             'photo_path'     => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
         // 2) Vérification de doublon sur (nom, prenom, date_naissance)
@@ -116,11 +131,13 @@ public function index(Request $request)
         $request->validate([
             'nom' => 'required|string',
             'prenom' => 'required|string',
+            'ine' => 'nullable|string|unique:etudiants,ine,' . $etudiant->id . '|required_without:matricule',
+            'matricule' => 'nullable|string|unique:etudiants,matricule,' . $etudiant->id . '|required_without:ine',
             'date_naissance' => 'required|date',
             'telephone' => 'nullable|string',
-            'universite' => 'nullable|string',
+            'university_id' => 'required|exists:universities,id',
             'statut' => 'nullable|string',
-            'discipline' => 'required|string',
+            'discipline_id' => 'required|exists:disciplines,id',
         ]);
 
         $etudiant->update($request->all());

@@ -16,6 +16,14 @@
                         {{ __('Liste des inscriptions') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('universities.index')" :active="request()->routeIs('universities.*')">
+                        {{ __('Universités') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('disciplines.index')" :active="request()->routeIs('disciplines.*')">
+                        {{ __('Disciplines') }}
+                    </x-nav-link>
+
                     <x-nav-link :href="route('badges.download.batch')" :active="request()->routeIs('badges.download.batch')">
                         {{ __('Telechargement ') }}
                     </x-nav-link>
@@ -75,6 +83,15 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('etudiants.index')" :active="request()->routeIs('etudiants.index')">
+                {{ __('Liste des inscriptions') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('universities.index')" :active="request()->routeIs('universities.*')">
+                {{ __('Universités') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('disciplines.index')" :active="request()->routeIs('disciplines.*')">
+                {{ __('Disciplines') }}
             </x-responsive-nav-link>
         </div>
 

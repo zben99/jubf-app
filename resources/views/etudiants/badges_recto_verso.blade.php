@@ -60,9 +60,9 @@
                 @endif
                 <div class="nom">{{ ucfirst(strtolower($etudiant->nom)) }}</div>
                 <div class="prenom">{{ ucfirst(strtolower($etudiant->prenom)) }}</div>
-                <div class="universite">{{ ucfirst(strtolower($etudiant->universite)) }}</div>
+                <div class="universite">{{ ucfirst(strtolower($etudiant->university->name ?? 'N/A')) }}</div>
                 <div class="statut">{{ ucfirst(strtolower($etudiant->statut)) }}</div>
-                <div class="discipline">{{ ucfirst(strtolower($etudiant->discipline)) }}</div>
+                <div class="discipline">{{ ucfirst(strtolower($etudiant->discipline->name ?? 'N/A')) }}</div>
             </div>
         @endforeach
     </div>

@@ -40,6 +40,8 @@
                                     <th>Photo</th>
                                     <th>Nom</th>
                                     <th>Prénom</th>
+                                    <th>INE</th>
+                                    <th>Matricule</th>
                                     <th>Date de naissance</th>
                                     <th>Téléphone</th>
                                     <th>Université</th>
@@ -61,12 +63,13 @@
                                         </td>
                                         <td>{{ $etudiant->nom }}</td>
                                         <td>{{ $etudiant->prenom }}</td>
+                                        <td>{{ $etudiant->ine }}</td>
+                                        <td>{{ $etudiant->matricule }}</td>
                                         <td>{{ \Carbon\Carbon::parse($etudiant->date_naissance)->format('d/m/Y') }}</td>
                                         <td>{{ $etudiant->telephone }}</td>
-                                        <td>{{ $etudiant->universite }}</td>
+                                        <td>{{ $etudiant->university->name ?? 'N/A' }}</td>
                                         <td>{{ $etudiant->statut }}</td>
-                                        <td>{{ $etudiant->discipline }}</td>
-
+                                        <td>{{ $etudiant->discipline->name ?? 'N/A' }}</td>
                                         <td>
                                             <a href="{{ route('badges.show', $etudiant->id) }}" class="btn btn-sm btn-outline-primary">
                                                 Générer badge
@@ -76,7 +79,7 @@
                                 @empty
 
                                     <tr>
-                                        <td colspan="8" class="text-muted text-center">Aucun étudiant trouvé.</td>
+                                        <td colspan="12" class="text-muted text-center">Aucun étudiant trouvé.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

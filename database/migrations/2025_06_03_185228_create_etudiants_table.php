@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->string('prenom');
+            $table->string('ine')->unique(); // Identifiant National Étudiant, doit être unique
+            $table->string('matricule')->unique(); // Matricule, doit être unique
             $table->date('date_naissance');
             $table->string('telephone')->nullable();
             $table->string('universite')->nullable();

@@ -4,6 +4,8 @@ use App\Models\Etudiant;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EtudiantController;
+use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\DisciplineController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,8 +25,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware('auth')->group(function () {
+    Route::resource('universities', UniversityController::class);
+    Route::resource('disciplines', DisciplineController::class);
+});
 
-//Route::get('/etudiants/create', [EtudiantController::class, 'create'])->name('etudiants.create');
+
+Route::get('/etudiants/create', [EtudiantController::class, 'create'])->name('etudiants.create');
 Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants.store');
 
 Route::get('/etudiants', [EtudiantController::class, 'index'])->name('etudiants.index');
