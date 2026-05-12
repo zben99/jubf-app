@@ -160,7 +160,8 @@
 
                             <div class="row gx-3">
                                 <div class="col-md-6 mb-3">
-                                    <label for="ine" class="form-label">INE <span class="text-danger">*</span></label>
+                                    <label for="ine" class="form-label">INE <span
+                                            class="text-danger">*</span></label>
                                     <input type="text" name="ine" id="ine"
                                         class="form-control @error('ine') is-invalid @enderror"
                                         value="{{ old('ine') }}">
@@ -170,7 +171,8 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="matricule" class="form-label">Matricule <span class="text-danger">*</span></label>
+                                    <label for="matricule" class="form-label">Matricule <span
+                                            class="text-danger">*</span></label>
                                     <input type="text" name="matricule" id="matricule"
                                         class="form-control @error('matricule') is-invalid @enderror"
                                         value="{{ old('matricule') }}">
@@ -210,9 +212,11 @@
                                     <select name="university_id" id="university_id"
                                         class="form-select @error('university_id') is-invalid @enderror" required>
                                         <option value="">-- Sélectionnez une université --</option>
-                                        @foreach($universities as $university)
-                                            <option value="{{ $university->id }}" {{ old('university_id') == $university->id ? 'selected' : '' }}>
-                                                {{ $university->name }} {{ $university->acronym ? '(' . $university->acronym . ')' : '' }}
+                                        @foreach ($universities as $university)
+                                            <option value="{{ $university->id }}"
+                                                {{ old('university_id') == $university->id ? 'selected' : '' }}>
+                                                {{ $university->name }}
+                                                {{ $university->acronym ? '(' . $university->acronym . ')' : '' }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -230,7 +234,8 @@
                                             Sportif</option>
                                         <option value="Artiste" {{ old('statut') == 'Artiste' ? 'selected' : '' }}>
                                             Artiste</option>
-                                        <option value="Encadreur" {{ old('statut') == 'Encadreur' ? 'selected' : '' }}>
+                                        <option value="Encadreur"
+                                            {{ old('statut') == 'Encadreur' ? 'selected' : '' }}>
                                             Encadreur</option>
                                     </select>
                                     @error('statut')
@@ -246,9 +251,11 @@
                                     <select name="discipline_id" id="discipline_id"
                                         class="form-select @error('discipline_id') is-invalid @enderror" required>
                                         <option value="">-- Sélectionnez une discipline --</option>
-                                        @foreach($disciplines as $discipline)
-                                            <option value="{{ $discipline->id }}" {{ old('discipline_id') == $discipline->id ? 'selected' : '' }}>
-                                                {{ $discipline->name }} {{ $discipline->category ? '(' . $discipline->category . ')' : '' }}
+                                        @foreach ($disciplines as $discipline)
+                                            <option value="{{ $discipline->id }}"
+                                                {{ old('discipline_id') == $discipline->id ? 'selected' : '' }}>
+                                                {{ $discipline->name }}
+                                                {{ $discipline->category ? '(' . $discipline->category . ')' : '' }}
                                             </option>
                                         @endforeach
                                     </select>

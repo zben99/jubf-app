@@ -18,14 +18,14 @@
                 </div>
 
                 <div class="card-body">
-                    @if(session('success'))
+                    @if (session('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     @endif
 
-                    @if($disciplines->count() > 0)
+                    @if ($disciplines->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
                                 <thead class="table-dark">
@@ -36,23 +36,27 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($disciplines as $discipline)
+                                    @foreach ($disciplines as $discipline)
                                         <tr>
                                             <td>{{ $discipline->id }}</td>
                                             <td>
-                                                <a href="{{ route('disciplines.show', $discipline) }}" class="text-decoration-none">
+                                                <a href="{{ route('disciplines.show', $discipline) }}"
+                                                    class="text-decoration-none">
                                                     {{ $discipline->name }}
                                                 </a>
                                             </td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <a href="{{ route('disciplines.show', $discipline) }}" class="btn btn-sm btn-info">
+                                                    <a href="{{ route('disciplines.show', $discipline) }}"
+                                                        class="btn btn-sm btn-info">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('disciplines.edit', $discipline) }}" class="btn btn-sm btn-warning">
+                                                    <a href="{{ route('disciplines.edit', $discipline) }}"
+                                                        class="btn btn-sm btn-warning">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form action="{{ route('disciplines.destroy', $discipline) }}" method="POST" class="d-inline">
+                                                    <form action="{{ route('disciplines.destroy', $discipline) }}"
+                                                        method="POST" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-danger"

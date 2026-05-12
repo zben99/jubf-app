@@ -17,13 +17,9 @@
                     <form method="GET" action="{{ route('etudiants.index') }}" class="mb-4">
                         <div class="row g-2">
                             <div class="col-md-10">
-                                <input
-                                    type="text"
-                                    name="search"
+                                <input type="text" name="search"
                                     placeholder="Rechercher par nom, prénom, université, etc."
-                                    value="{{ $search }}"
-                                    class="form-control"
-                                >
+                                    value="{{ $search }}" class="form-control">
                             </div>
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-primary w-100">Rechercher</button>
@@ -35,7 +31,7 @@
                     <div class="table-responsive">
                         <table class="table table-hover align-middle table-bordered text-center">
                             <thead class="table-light">
-                               <tr>
+                                <tr>
                                     <th>N°</th>
                                     <th>Photo</th>
                                     <th>Nom</th>
@@ -53,10 +49,12 @@
                             <tbody>
                                 @forelse ($etudiants as $index => $etudiant)
                                     <tr>
-                                         <td>{{ $index + 1 }}</td>
+                                        <td>{{ $index + 1 }}</td>
                                         <td>
-                                              @if ($etudiant->photo_path)
-                                                <img src="{{ asset('storage/' . $etudiant->photo_path) }}" alt="Photo" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
+                                            @if ($etudiant->photo_path)
+                                                <img src="{{ asset('storage/' . $etudiant->photo_path) }}"
+                                                    alt="Photo"
+                                                    style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
                                             @else
                                                 <span class="text-muted">Aucune</span>
                                             @endif
@@ -71,7 +69,8 @@
                                         <td>{{ $etudiant->statut }}</td>
                                         <td>{{ $etudiant->discipline->name ?? 'N/A' }}</td>
                                         <td>
-                                            <a href="{{ route('badges.show', $etudiant->id) }}" class="btn btn-sm btn-outline-primary">
+                                            <a href="{{ route('badges.show', $etudiant->id) }}"
+                                                class="btn btn-sm btn-outline-primary">
                                                 Générer badge
                                             </a>
                                         </td>

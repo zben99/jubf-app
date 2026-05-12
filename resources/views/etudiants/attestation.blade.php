@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <title>Attestations</title>
@@ -19,7 +20,7 @@
             width: 100%;
             height: 100%;
             page-break-after: always;
-            background: url('file://{{ public_path("images/attestation.png") }}') no-repeat center center;
+            background: url('file://{{ public_path('images/attestation.png') }}') no-repeat center center;
             background-size: cover;
         }
 
@@ -35,7 +36,7 @@
             text-align: center;
         }
 
-            .statut {
+        .statut {
             position: absolute;
             top: 430px;
             left: 46.5%;
@@ -47,12 +48,11 @@
         }
     </style>
 </head>
+
 <body>
-            @foreach($etudiants as $attestation)
-                    <div class="page">
-           @php
-
-
+    @foreach ($etudiants as $attestation)
+        <div class="page">
+            @php
 
                 $universite = trim($attestation->university->name ?? '');
                 $universiteFormatee = $universite ?: 'N/A';
@@ -70,14 +70,15 @@
             @endphp
 
             <div class="nom-complet">
-                {{ strtoupper($attestation->nom) }} {{ ucwords(strtolower($attestation->prenom)) }} – {{ $prefixe }} {{ $universiteFormatee }}
+                {{ strtoupper($attestation->nom) }} {{ ucwords(strtolower($attestation->prenom)) }} –
+                {{ $prefixe }} {{ $universiteFormatee }}
             </div>
 
             @php
                 $statut = ucwords(strtolower($attestation->statut));
                 $voyelles = ['a', 'e', 'i', 'o', 'u', 'y'];
                 $lettreInitiale = strtolower(substr($statut, 0, 1));
-                $prefixe = in_array($lettreInitiale, $voyelles) ? "qu’" : "que ";
+                $prefixe = in_array($lettreInitiale, $voyelles) ? 'qu’' : 'que ';
             @endphp
 
             <div class="statut">
@@ -87,4 +88,5 @@
         </div>
     @endforeach
 </body>
+
 </html>

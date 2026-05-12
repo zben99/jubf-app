@@ -21,7 +21,8 @@
 
                                 <div class="row gx-3">
                                     <div class="col-md-8 mb-3">
-                                        <label for="name" class="form-label">Libellé de l'université <span class="text-danger">*</span></label>
+                                        <label for="name" class="form-label">Libellé de l'université <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="name" id="name"
                                             class="form-control @error('name') is-invalid @enderror"
                                             value="{{ old('name', $university->name) }}" required>

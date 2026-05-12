@@ -26,7 +26,7 @@
                     <div class="table-responsive">
                         <table class="table table-hover align-middle table-bordered text-center">
                             <thead class="table-light">
-                               <tr>
+                                <tr>
                                     <th>N°</th>
                                     <th>Libellé</th>
                                     <th>Code</th>
@@ -36,21 +36,24 @@
                             <tbody>
                                 @forelse ($universities as $index => $university)
                                     <tr>
-                                         <td>{{ $index + 1 }}</td>
+                                        <td>{{ $index + 1 }}</td>
                                         <td>{{ $university->name }}</td>
                                         <td>{{ $university->acronym ?? '-' }}</td>
                                         <td>
-                                            <a href="{{ route('universities.show', $university) }}" class="btn btn-sm btn-outline-info">
+                                            <a href="{{ route('universities.show', $university) }}"
+                                                class="btn btn-sm btn-outline-info">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('universities.edit', $university) }}" class="btn btn-sm btn-outline-warning">
+                                            <a href="{{ route('universities.edit', $university) }}"
+                                                class="btn btn-sm btn-outline-warning">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form action="{{ route('universities.destroy', $university) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('universities.destroy', $university) }}"
+                                                method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette université ?')">
+                                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette université ?')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -58,7 +61,8 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-muted text-center">Aucune université trouvée.</td>
+                                        <td colspan="7" class="text-muted text-center">Aucune université trouvée.
+                                        </td>
                                     </tr>
                                 @endforelse
                             </tbody>

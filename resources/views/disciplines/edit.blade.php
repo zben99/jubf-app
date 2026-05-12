@@ -21,7 +21,8 @@
 
                                 <div class="row gx-3">
                                     <div class="col-md-12 mb-3">
-                                        <label for="name" class="form-label">Libellé de la discipline sportive / loisir <span class="text-danger">*</span></label>
+                                        <label for="name" class="form-label">Libellé de la discipline sportive /
+                                            loisir <span class="text-danger">*</span></label>
                                         <input type="text" name="name" id="name"
                                             class="form-control @error('name') is-invalid @enderror"
                                             value="{{ old('name', $discipline->name) }}" required>

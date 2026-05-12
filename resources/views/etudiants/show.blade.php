@@ -29,12 +29,11 @@
                                 <div class="col-md-4 text-center mb-4">
                                     @if ($etudiant->photo_path)
                                         <img src="{{ asset('storage/' . $etudiant->photo_path) }}"
-                                             alt="Photo de {{ $etudiant->nom }}"
-                                             class="img-fluid rounded shadow"
-                                             style="max-width: 200px; max-height: 200px; object-fit: cover;">
+                                            alt="Photo de {{ $etudiant->nom }}" class="img-fluid rounded shadow"
+                                            style="max-width: 200px; max-height: 200px; object-fit: cover;">
                                     @else
                                         <div class="bg-light rounded d-flex align-items-center justify-content-center"
-                                             style="width: 200px; height: 200px; margin: 0 auto;">
+                                            style="width: 200px; height: 200px; margin: 0 auto;">
                                             <i class="fas fa-user fa-3x text-muted"></i>
                                         </div>
                                     @endif
@@ -70,7 +69,8 @@
                                             <table class="table table-borderless">
                                                 <tr>
                                                     <td class="fw-bold">Date de naissance :</td>
-                                                    <td>{{ $etudiant->date_naissance ? \Carbon\Carbon::parse($etudiant->date_naissance)->format('d/m/Y') : '-' }}</td>
+                                                    <td>{{ $etudiant->date_naissance ? \Carbon\Carbon::parse($etudiant->date_naissance)->format('d/m/Y') : '-' }}
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">Téléphone :</td>
