@@ -1,92 +1,92 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
-            <h2 class="font-semibold text-xl text-dark">
-                {{ __('Gestion des Disciplines') }}
-            </h2>
-            <a href="{{ route('disciplines.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Ajouter une discipline
+            <div>
+                <h2><i class="fas fa-music me-2 text-danger"></i>Disciplines</h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Tableau de bord</a></li>
+                        <li class="breadcrumb-item active">Disciplines</li>
+                    </ol>
+                </nav>
+            </div>
+            <a href="{{ route('disciplines.create') }}" class="btn btn-danger">
+                <i class="fas fa-plus me-1"></i> Ajouter une discipline
             </a>
         </div>
     </x-slot>
 
-    <div class="py-4">
-        <div class="container">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Liste des disciplines</h5>
-                </div>
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
-                <div class="card-body">
-                    @if (session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    @endif
-
-                    @if ($disciplines->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Libellé</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($disciplines as $discipline)
-                                        <tr>
-                                            <td>{{ $discipline->id }}</td>
-                                            <td>
-                                                <a href="{{ route('disciplines.show', $discipline) }}"
-                                                    class="text-decoration-none">
-                                                    {{ $discipline->name }}
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group" role="group">
-                                                    <a href="{{ route('disciplines.show', $discipline) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
-                                                    <a href="{{ route('disciplines.edit', $discipline) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <form action="{{ route('disciplines.destroy', $discipline) }}"
-                                                        method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette discipline ?')">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="d-flex justify-content-center mt-4">
-                            {{ $disciplines->links() }}
-                        </div>
-                    @else
-                        <div class="text-center py-5">
-                            <i class="fas fa-graduation-cap fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">Aucune discipline trouvée</h5>
-                            <p class="text-muted">Commencez par ajouter une nouvelle discipline.</p>
-                            <a href="{{ route('disciplines.create') }}" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Ajouter la première discipline
-                            </a>
-                        </div>
-                    @endif
-                </div>
+    <div class="card card-admin">
+        <div class="card-header ch-neutral d-flex justify-content-between align-items-center">
+            <span class="fw-bold"><i class="fas fa-list me-1 text-danger"></i>{{ $disciplines->total() }} discipline(s)</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" style="font-size:.875rem;">
+                    <thead style="background:#f8f9fb; border-bottom:2px solid #e3e6ea;">
+                        <tr>
+                            <th class="px-3 py-3" style="width:50px;">N°</th>
+                            <th>Discipline</th>
+                            <th class="text-center" style="width:150px;">Participants</th>
+                            <th class="text-center" style="width:130px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($disciplines as $i => $discipline)
+                            <tr>
+                                <td class="px-3 text-muted">{{ $disciplines->firstItem() + $i }}</td>
+                                <td class="fw-semibold">
+                                    <i class="fas fa-star-half-alt text-warning me-2" style="font-size:.75rem;"></i>
+                                    {{ $discipline->name }}
+                                </td>
+                                <td class="text-center">
+                                    @php $nb = $discipline->etudiants()->count(); @endphp
+                                    @if($nb > 0)
+                                        <span class="badge rounded-pill" style="background:#c0392b;">{{ $nb }}</span>
+                                    @else
+                                        <span class="text-muted small">0</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex gap-1 justify-content-center">
+                                        <a href="{{ route('disciplines.edit', $discipline) }}"
+                                           class="btn btn-sm btn-outline-secondary" title="Modifier">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <form action="{{ route('disciplines.destroy', $discipline) }}" method="POST"
+                                              onsubmit="return confirm('Supprimer « {{ addslashes($discipline->name) }} » ?')">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="fas fa-music fa-2x mb-2 d-block"></i>
+                                    Aucune discipline enregistrée.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
+        @if ($disciplines->hasPages())
+            <div class="card-footer bg-white d-flex justify-content-between align-items-center py-2">
+                <small class="text-muted">Page {{ $disciplines->currentPage() }} / {{ $disciplines->lastPage() }}</small>
+                {{ $disciplines->links() }}
+            </div>
+        @endif
     </div>
 </x-app-layout>

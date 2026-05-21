@@ -22,31 +22,33 @@ class EtudiantController extends Controller
 
 public function index(Request $request)
 {
-    $search = $request->input('search');
+    $search        = $request->input('search');
+    $universityId  = $request->input('university_id');
+    $disciplineId  = $request->input('discipline_id');
+    $statut        = $request->input('statut');
 
     $etudiants = Etudiant::with(['university', 'discipline'])
-        ->when($search, function ($query, $search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('ine', 'like', "%{$search}%")
-                  ->orWhere('matricule', 'like', "%{$search}%")
-                  ->orWhere('telephone', 'like', "%{$search}%")
-                  ->orWhere('statut', 'like', "%{$search}%")
-                  ->orWhereHas('university', function ($uq) use ($search) {
-                      $uq->where('name', 'like', "%{$search}%")
-                         ->orWhere('acronym', 'like', "%{$search}%");
-                  })
-                  ->orWhereHas('discipline', function ($dq) use ($search) {
-                      $dq->where('name', 'like', "%{$search}%")
-                         ->orWhere('category', 'like', "%{$search}%");
-                  });
-            });
-        })
+        ->when($search, fn($q) => $q->where(function ($q) use ($search) {
+            $q->where('nom',       'like', "%{$search}%")
+              ->orWhere('prenom',  'like', "%{$search}%")
+              ->orWhere('ine',     'like', "%{$search}%")
+              ->orWhere('matricule','like',"%{$search}%")
+              ->orWhere('telephone','like',"%{$search}%");
+        }))
+        ->when($universityId, fn($q) => $q->where('university_id', $universityId))
+        ->when($disciplineId, fn($q) => $q->where('discipline_id', $disciplineId))
+        ->when($statut,       fn($q) => $q->where('statut', $statut))
         ->orderBy('nom')
-        ->paginate(10);
+        ->paginate(20)
+        ->withQueryString();
 
-    return view('etudiants.index', compact('etudiants', 'search'));
+    $universities = University::orderBy('name')->get();
+    $disciplines  = Discipline::orderBy('name')->get();
+
+    return view('etudiants.index', compact(
+        'etudiants', 'search', 'universityId', 'disciplineId', 'statut',
+        'universities', 'disciplines'
+    ));
 }
 
     public function create()
@@ -297,58 +299,28 @@ public function telechargerBadges222()
 
 
 
- public function telechargerBadges($limite = null)
+public function telechargerBadges()
 {
     ini_set('memory_limit', '512M');
     set_time_limit(300);
 
-    $lastId = 1210;
-    $lotSize = 100;
+    $etudiants = Etudiant::all()->chunk(2);
 
-    /*for ($start = 1; $start <= $lastId; $start += $lotSize) {
-        $end = min($start + $lotSize - 1, $lastId);
-*/
-        $etudiants = Etudiant::where('id', [$start, $end])->get();
+    $html = view('etudiants.badges_recto', compact('etudiants'))->render();
+    $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'portrait');
 
-      /*  if ($etudiants->isEmpty()) {
-            continue; // ignorer si aucun étudiant dans l'intervalle
-        }*/
-
-        $html = view('etudiants.attestation', compact('etudiants'))->render();
-        $pdf = Pdf::loadHTML($html)->setPaper('A4', 'landscape');
-
-        // Enregistrer dans un dossier local (ex : storage/app/public/attestations/)
-        $fileName = "attestations_{$start}_{$end}.pdf";
-
-        Storage::disk('public')->put("attestations/{$fileName}", $pdf->output());
-
-    //}
-
-    return response()->json(['message' => 'Génération par lot terminée']);
-
+    return $pdf->download('badges_recto.pdf');
 }
 
-public function showBadge($id)
+public function showBadge(int $id)
 {
-       $etudiant = Etudiant::findOrFail($id);
+    $etudiant  = Etudiant::findOrFail($id);
+    $etudiants = collect([$etudiant])->chunk(2);
 
-      $etudiants = Etudiant::where('id', [$start, $end])->get();
+    $html = view('etudiants.badges_recto', compact('etudiants'))->render();
+    $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'portrait');
 
-      /*  if ($etudiants->isEmpty()) {
-            continue; // ignorer si aucun étudiant dans l'intervalle
-        }*/
-
-        $html = view('etudiants.attestation', compact('etudiants'))->render();
-        $pdf = Pdf::loadHTML($html)->setPaper('A4', 'landscape');
-
-        // Enregistrer dans un dossier local (ex : storage/app/public/attestations/)
-        $fileName = "attestations_{$start}_{$end}.pdf";
-
-        Storage::disk('public')->put("attestations/{$fileName}", $pdf->output());
-
-    //}
-
-    return response()->json(['message' => 'Génération par lot terminée']);
+    return $pdf->stream('badge_' . $etudiant->code . '.pdf');
 }
 
 }
