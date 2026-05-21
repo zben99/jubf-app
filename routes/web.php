@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Etudiant;
+use App\Models\University;
+use App\Models\Discipline;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EtudiantController;
@@ -14,8 +16,33 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     $nombreInscriptions = Etudiant::count();
+    $nombreUniversites   = University::count();
+    $nombreDisciplines   = Discipline::count();
 
-    return view('dashboard', compact('nombreInscriptions'));
+    $universities = University::orderBy('name')->get();
+    $disciplines  = Discipline::orderBy('name')->get();
+
+    // Compter les participants par université et par discipline
+    $stats = Etudiant::selectRaw('university_id, discipline_id, COUNT(*) as total')
+        ->groupBy('university_id', 'discipline_id')
+        ->get()
+        ->groupBy('university_id')
+        ->map(fn($rows) => $rows->keyBy('discipline_id'));
+
+    // Total par université
+    $totauxUniversite = Etudiant::selectRaw('university_id, COUNT(*) as total')
+        ->groupBy('university_id')
+        ->pluck('total', 'university_id');
+
+    // Total par discipline
+    $totauxDiscipline = Etudiant::selectRaw('discipline_id, COUNT(*) as total')
+        ->groupBy('discipline_id')
+        ->pluck('total', 'discipline_id');
+
+    return view('dashboard', compact(
+        'nombreInscriptions', 'nombreUniversites', 'nombreDisciplines',
+        'universities', 'disciplines', 'stats', 'totauxUniversite', 'totauxDiscipline'
+    ));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
