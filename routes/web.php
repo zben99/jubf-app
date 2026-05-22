@@ -57,38 +57,40 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware('auth')->group(function () {
+// ── Routes accessibles aux deux rôles (admin + cenou) ──────────────────────
+Route::middleware(['auth'])->group(function () {
+
+    // Universités & disciplines : CRUD complet pour les deux rôles
     Route::resource('universities', UniversityController::class);
-    Route::resource('disciplines', DisciplineController::class);
-});
+    Route::resource('disciplines',  DisciplineController::class);
 
+    // Candidats : lecture seule
+    Route::get('/etudiants',              [EtudiantController::class, 'index'])->name('etudiants.index');
+    Route::get('/etudiants/{etudiant}',   [EtudiantController::class, 'show'])->name('etudiants.show');
 
-// Inscription publique (sans auth)
-Route::get('/etudiants/create', [EtudiantController::class, 'create'])->name('etudiants.create');
-Route::post('/etudiants',       [EtudiantController::class, 'store'])->name('etudiants.store');
-
-// Paramètres admin
-Route::middleware('auth')->group(function () {
+    // Configuration (toggle inscriptions)
     Route::post('/settings/toggle-registration', [SettingController::class, 'toggleRegistration'])
         ->name('settings.toggle-registration');
 });
 
-// Gestion candidats (admin)
-Route::middleware('auth')->group(function () {
-    Route::get('/etudiants',              [EtudiantController::class, 'index'])->name('etudiants.index');
-    Route::get('/etudiants/{etudiant}',   [EtudiantController::class, 'show'])->name('etudiants.show');
-    Route::delete('/etudiants/{etudiant}',[EtudiantController::class, 'destroy'])->name('etudiants.destroy');
+// ── Routes réservées à l'admin uniquement ──────────────────────────────────
+Route::middleware(['auth', 'role:admin'])->group(function () {
 
-    // Page de téléchargement badges
-    Route::get('/badges/export', [EtudiantController::class, 'badgesExport'])->name('badges.export');
+    // (universités & disciplines gérées dans le groupe auth ci-dessus)
 
-    // Téléchargements PDF
-    Route::get('/badges/all',                        [EtudiantController::class, 'telechargerBadges'])->name('badges.all');
-    Route::get('/badges/university/{id}',            [EtudiantController::class, 'telechargerBadgesByUniversity'])->name('badges.by-university');
-    Route::get('/badges/discipline/{id}',            [EtudiantController::class, 'telechargerBadgesByDiscipline'])->name('badges.by-discipline');
-    Route::get('/badges/show/{id}',                  [EtudiantController::class, 'showBadge'])->name('badges.show');
-    Route::get('/badges/download/batch',             [EtudiantController::class, 'telechargerBadges'])->name('badges.download.batch');
-    Route::get('/badges/download/batch1',            [EtudiantController::class, 'telechargerBadges1'])->name('badges.download.batch1');
+    // Suppression candidats
+    Route::delete('/etudiants/{etudiant}', [EtudiantController::class, 'destroy'])->name('etudiants.destroy');
+
+    // Téléchargements badges & attestations
+    Route::get('/badges/export',           [EtudiantController::class, 'badgesExport'])->name('badges.export');
+    Route::get('/badges/all',              [EtudiantController::class, 'telechargerBadges'])->name('badges.all');
+    Route::get('/badges/university/{id}',  [EtudiantController::class, 'telechargerBadgesByUniversity'])->name('badges.by-university');
+    Route::get('/badges/discipline/{id}',  [EtudiantController::class, 'telechargerBadgesByDiscipline'])->name('badges.by-discipline');
+    Route::get('/badges/show/{id}',        [EtudiantController::class, 'showBadge'])->name('badges.show');
+    Route::get('/badges/download/batch',   [EtudiantController::class, 'telechargerBadges'])->name('badges.download.batch');
+    Route::get('/badges/download/batch1',  [EtudiantController::class, 'telechargerBadges1'])->name('badges.download.batch1');
 });
+
+// ── Inscription publique (sans auth) ──────────────────────────────────────
 
 require __DIR__.'/auth.php';

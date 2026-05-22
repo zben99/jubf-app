@@ -10,9 +10,11 @@
                     </ol>
                 </nav>
             </div>
+            @if(Auth::user()->isAdmin())
             <a href="{{ route('etudiants.create') }}" class="btn btn-danger">
                 <i class="fas fa-plus me-1"></i> Inscrire un candidat
             </a>
+            @endif
         </div>
     </x-slot>
 
@@ -79,9 +81,11 @@
                     <span class="badge bg-danger ms-1">filtrés</span>
                 @endif
             </span>
+            @if(Auth::user()->isAdmin())
             <a href="{{ route('badges.download.batch') }}" class="btn btn-sm btn-outline-danger">
                 <i class="fas fa-download me-1"></i> Télécharger tous les badges
             </a>
+            @endif
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -142,10 +146,12 @@
                                            class="btn btn-sm btn-outline-secondary" title="Voir la fiche">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @if(Auth::user()->isAdmin())
                                         <a href="{{ route('badges.show', $etudiant->id) }}"
                                            class="btn btn-sm btn-outline-danger" title="Badge PDF">
                                             <i class="fas fa-id-badge"></i>
                                         </a>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

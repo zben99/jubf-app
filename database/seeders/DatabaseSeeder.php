@@ -14,10 +14,22 @@ class DatabaseSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'test@example.com'],
             [
-                'name' => 'Administrateur SENAC-UB',
-                'email_verified_at' => now(),
-                'password' => Hash::make('password'),
-                'remember_token' => Str::random(10),
+                'name'             => 'Administrateur SENAC-UB',
+                'role'             => 'admin',
+                'email_verified_at'=> now(),
+                'password'         => Hash::make('password'),
+                'remember_token'   => Str::random(10),
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'cenou@senacub.bf'],
+            [
+                'name'             => 'Utilisateur CENOU',
+                'role'             => 'cenou',
+                'email_verified_at'=> now(),
+                'password'         => Hash::make('cenou2026'),
+                'remember_token'   => Str::random(10),
             ]
         );
 

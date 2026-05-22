@@ -180,6 +180,7 @@
             </a>
         </nav>
 
+        @if(Auth::user()->isAdmin())
         <div class="nav-section">Export</div>
         <nav class="nav flex-column">
             <a class="nav-link {{ request()->routeIs('badges.*') ? 'active' : '' }}"
@@ -187,6 +188,7 @@
                 <i class="fas fa-file-pdf"></i> Téléchargement badges
             </a>
         </nav>
+        @endif
 
         <div class="sidebar-footer mt-auto">
             <a class="nav-link" href="{{ url('/') }}" target="_blank">
