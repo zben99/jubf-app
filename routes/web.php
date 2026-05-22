@@ -3,11 +3,13 @@
 use App\Models\Etudiant;
 use App\Models\University;
 use App\Models\Discipline;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EtudiantController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\DisciplineController;
+use App\Http\Controllers\SettingController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -39,9 +41,12 @@ Route::get('/dashboard', function () {
         ->groupBy('discipline_id')
         ->pluck('total', 'discipline_id');
 
+    $registrationOpen = Setting::registrationOpen();
+
     return view('dashboard', compact(
         'nombreInscriptions', 'nombreUniversites', 'nombreDisciplines',
-        'universities', 'disciplines', 'stats', 'totauxUniversite', 'totauxDiscipline'
+        'universities', 'disciplines', 'stats', 'totauxUniversite', 'totauxDiscipline',
+        'registrationOpen'
     ));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -58,18 +63,32 @@ Route::middleware('auth')->group(function () {
 });
 
 
+// Inscription publique (sans auth)
 Route::get('/etudiants/create', [EtudiantController::class, 'create'])->name('etudiants.create');
-Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants.store');
+Route::post('/etudiants',       [EtudiantController::class, 'store'])->name('etudiants.store');
 
-Route::get('/etudiants', [EtudiantController::class, 'index'])->name('etudiants.index');
+// Paramètres admin
+Route::middleware('auth')->group(function () {
+    Route::post('/settings/toggle-registration', [SettingController::class, 'toggleRegistration'])
+        ->name('settings.toggle-registration');
+});
 
-Route::get('/etudiants/badge/{id}', [EtudiantController::class, 'generate'])->name('badge.generate');
+// Gestion candidats (admin)
+Route::middleware('auth')->group(function () {
+    Route::get('/etudiants',              [EtudiantController::class, 'index'])->name('etudiants.index');
+    Route::get('/etudiants/{etudiant}',   [EtudiantController::class, 'show'])->name('etudiants.show');
+    Route::delete('/etudiants/{etudiant}',[EtudiantController::class, 'destroy'])->name('etudiants.destroy');
 
-Route::get('/badges/{id}', [EtudiantController::class, 'showBadge'])->name('badges.show');
+    // Page de téléchargement badges
+    Route::get('/badges/export', [EtudiantController::class, 'badgesExport'])->name('badges.export');
 
-Route::get('/badges/download/batch', [EtudiantController::class, 'telechargerBadges'])->name('badges.download.batch');
-
-
-Route::get('/badges/download/batch1', [EtudiantController::class, 'telechargerBadges1'])->name('badges.download.batch1');
+    // Téléchargements PDF
+    Route::get('/badges/all',                        [EtudiantController::class, 'telechargerBadges'])->name('badges.all');
+    Route::get('/badges/university/{id}',            [EtudiantController::class, 'telechargerBadgesByUniversity'])->name('badges.by-university');
+    Route::get('/badges/discipline/{id}',            [EtudiantController::class, 'telechargerBadgesByDiscipline'])->name('badges.by-discipline');
+    Route::get('/badges/show/{id}',                  [EtudiantController::class, 'showBadge'])->name('badges.show');
+    Route::get('/badges/download/batch',             [EtudiantController::class, 'telechargerBadges'])->name('badges.download.batch');
+    Route::get('/badges/download/batch1',            [EtudiantController::class, 'telechargerBadges1'])->name('badges.download.batch1');
+});
 
 require __DIR__.'/auth.php';

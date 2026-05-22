@@ -12,6 +12,49 @@
     <div class="py-4">
         <div class="container-fluid px-4">
 
+            {{-- Alerte flash --}}
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-3">
+                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            {{-- Bloc statut des inscriptions --}}
+            <div class="card card-admin mb-4">
+                <div class="card-body d-flex align-items-center justify-content-between flex-wrap gap-3 py-3 px-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:48px;height:48px;background:{{ $registrationOpen ? '#d4edda' : '#f8d7da' }};">
+                            <i class="fas fa-{{ $registrationOpen ? 'lock-open' : 'lock' }} fs-5"
+                               style="color:{{ $registrationOpen ? '#198754' : '#c0392b' }};"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold" style="font-size:.95rem;">
+                                Inscriptions
+                                <span class="badge rounded-pill ms-1 {{ $registrationOpen ? 'bg-success' : 'bg-danger' }}">
+                                    {{ $registrationOpen ? 'OUVERTES' : 'FERMÉES' }}
+                                </span>
+                            </div>
+                            <div class="text-muted small">
+                                {{ $registrationOpen
+                                    ? 'Le formulaire d\'inscription public est accessible.'
+                                    : 'Le formulaire public est désactivé. Aucune nouvelle inscription.' }}
+                            </div>
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ route('settings.toggle-registration') }}">
+                        @csrf
+                        <button type="submit"
+                                class="btn {{ $registrationOpen ? 'btn-outline-danger' : 'btn-success' }} px-4"
+                                onclick="return confirm('{{ $registrationOpen ? 'Fermer les inscriptions ?' : 'Ouvrir les inscriptions ?' }}')">
+                            <i class="fas fa-{{ $registrationOpen ? 'lock' : 'lock-open' }} me-2"></i>
+                            {{ $registrationOpen ? 'Fermer les inscriptions' : 'Ouvrir les inscriptions' }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
             {{-- Cartes de résumé --}}
             <div class="row g-3 mb-4">
                 <div class="col-md-4">

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>SENAC-UB 2026 - Inscriptions</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -152,10 +153,17 @@
       Les étudiants participants peuvent ici effectuer leur inscription et obtenir leur badge de participation.
     </p>
 
-    @if (Route::has('etudiants.create'))
+    @php $open = \App\Models\Setting::registrationOpen(); @endphp
+    @if ($open)
       <a href="{{ route('etudiants.create') }}" class="btn-inscrire">S'inscrire maintenant</a>
     @else
-      <p class="closed">Les inscriptions sont actuellement closes.</p>
+      <div style="display:inline-flex;align-items:center;gap:10px;background:#fdecea;border:1px solid #f5c6c2;border-radius:10px;padding:14px 28px;">
+        <i class="fas fa-lock" style="color:#c0392b;font-size:1.2rem;"></i>
+        <div style="text-align:left;">
+          <div style="font-weight:700;color:#c0392b;">Inscriptions fermées</div>
+          <div style="font-size:.85rem;color:#666;">Contactez l'administration pour plus d'informations.</div>
+        </div>
+      </div>
     @endif
   </main>
 

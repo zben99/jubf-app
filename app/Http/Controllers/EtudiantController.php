@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use ZipArchive;
 use App\Models\Etudiant;
 use App\Models\University;
 use App\Models\Discipline;
+use App\Models\Setting;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Intervention\Image\Image;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -53,14 +51,22 @@ public function index(Request $request)
 
     public function create()
     {
-        $universities = University::where('is_active', true)->orderBy('name')->get();
-        $disciplines = Discipline::where('is_active', true)->orderBy('name')->get();
+        if (! Setting::registrationOpen()) {
+            return view('etudiants.closed');
+        }
+
+        $universities = University::orderBy('name')->get();
+        $disciplines  = Discipline::orderBy('name')->get();
 
         return view('etudiants.create', compact('universities', 'disciplines'));
     }
 
     public function store(Request $request)
     {
+        if (! Setting::registrationOpen()) {
+            abort(403, 'Les inscriptions sont actuellement fermées.');
+        }
+
         // 1) Validation des champs (photo_path obligatoire, etc.)
         $validated = $request->validate([
             'nom'            => 'required|string|max:255',
@@ -299,22 +305,77 @@ public function telechargerBadges222()
 
 
 
+public function badgesExport()
+{
+    $universities = University::withCount('etudiants')
+        ->having('etudiants_count', '>', 0)
+        ->orderBy('name')
+        ->get();
+
+    $disciplines = Discipline::withCount('etudiants')
+        ->having('etudiants_count', '>', 0)
+        ->orderBy('name')
+        ->get();
+
+    $totalCandidats = Etudiant::count();
+
+    return view('etudiants.badges_export', compact('universities', 'disciplines', 'totalCandidats'));
+}
+
 public function telechargerBadges()
 {
     ini_set('memory_limit', '512M');
     set_time_limit(300);
 
-    $etudiants = Etudiant::all()->chunk(2);
+    $etudiants = Etudiant::with(['university', 'discipline'])->get()->chunk(2);
 
     $html = view('etudiants.badges_recto', compact('etudiants'))->render();
     $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'portrait');
 
-    return $pdf->download('badges_recto.pdf');
+    return $pdf->download('badges_tous.pdf');
+}
+
+public function telechargerBadgesByUniversity(int $universityId)
+{
+    ini_set('memory_limit', '512M');
+    set_time_limit(300);
+
+    $university = University::findOrFail($universityId);
+    $etudiants  = Etudiant::with(['university', 'discipline'])
+        ->where('university_id', $universityId)
+        ->orderBy('nom')
+        ->get()
+        ->chunk(2);
+
+    $html = view('etudiants.badges_recto', compact('etudiants'))->render();
+    $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'portrait');
+    $slug = \Illuminate\Support\Str::slug($university->acronym ?: $university->name);
+
+    return $pdf->download("badges_{$slug}.pdf");
+}
+
+public function telechargerBadgesByDiscipline(int $disciplineId)
+{
+    ini_set('memory_limit', '512M');
+    set_time_limit(300);
+
+    $discipline = Discipline::findOrFail($disciplineId);
+    $etudiants  = Etudiant::with(['university', 'discipline'])
+        ->where('discipline_id', $disciplineId)
+        ->orderBy('nom')
+        ->get()
+        ->chunk(2);
+
+    $html = view('etudiants.badges_recto', compact('etudiants'))->render();
+    $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'portrait');
+    $slug = \Illuminate\Support\Str::slug($discipline->name);
+
+    return $pdf->download("badges_{$slug}.pdf");
 }
 
 public function showBadge(int $id)
 {
-    $etudiant  = Etudiant::findOrFail($id);
+    $etudiant  = Etudiant::with(['university', 'discipline'])->findOrFail($id);
     $etudiants = collect([$etudiant])->chunk(2);
 
     $html = view('etudiants.badges_recto', compact('etudiants'))->render();

@@ -182,13 +182,9 @@
 
         <div class="nav-section">Export</div>
         <nav class="nav flex-column">
-            <a class="nav-link {{ request()->routeIs('badges.download.batch') && !request()->routeIs('badges.download.batch1') ? 'active' : '' }}"
-               href="{{ route('badges.download.batch') }}">
-                <i class="fas fa-id-badge"></i> Télécharger badges
-            </a>
-            <a class="nav-link {{ request()->routeIs('badges.download.batch1') ? 'active' : '' }}"
-               href="{{ route('badges.download.batch1') }}">
-                <i class="fas fa-id-card"></i> Télécharger badges CO
+            <a class="nav-link {{ request()->routeIs('badges.*') ? 'active' : '' }}"
+               href="{{ route('badges.export') }}">
+                <i class="fas fa-file-pdf"></i> Téléchargement badges
             </a>
         </nav>
 
