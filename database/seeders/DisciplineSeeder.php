@@ -28,6 +28,10 @@ class DisciplineSeeder extends Seeder
             'Handi-sport',
             'Athlétisme',
             'Lutte',
+            'Football',
+            'Handball',
+            'Basketball',
+            'Volleyball',
         ];
 
         foreach ($disciplines as $name) {
