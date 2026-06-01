@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Inscription publique (sans authentification)
+Route::get('/etudiants/create',  [EtudiantController::class, 'create'])->name('etudiants.create');
+Route::post('/etudiants',        [EtudiantController::class, 'store'])->name('etudiants.store');
+
 
 Route::get('/dashboard', function () {
     $nombreInscriptions = Etudiant::count();
