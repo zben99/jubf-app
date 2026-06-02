@@ -193,19 +193,23 @@
                             {{-- INE / Matricule --}}
                             <div class="row gx-3">
                                 <div class="col-md-6 mb-3">
-                                    <label for="ine" class="form-label">INE</label>
+                                    <label for="ine" class="form-label">
+                                        INE <span id="ine-required-star" class="text-danger"></span>
+                                    </label>
                                     <input type="text" name="ine" id="ine"
                                         class="form-control @error('ine') is-invalid @enderror"
                                         value="{{ old('ine') }}">
-                                    <div class="form-text">Requis si le matricule est vide.</div>
+                                    <div class="form-text" id="ine-hint">Requis si le matricule est vide.</div>
                                     @error('ine')<small class="text-danger">{{ $message }}</small>@enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="matricule" class="form-label">Matricule</label>
+                                    <label for="matricule" class="form-label">
+                                        Matricule <span id="matricule-required-star" class="text-danger"></span>
+                                    </label>
                                     <input type="text" name="matricule" id="matricule"
                                         class="form-control @error('matricule') is-invalid @enderror"
                                         value="{{ old('matricule') }}">
-                                    <div class="form-text">Requis si l'INE est vide.</div>
+                                    <div class="form-text" id="matricule-hint">Requis si l'INE est vide.</div>
                                     @error('matricule')<small class="text-danger">{{ $message }}</small>@enderror
                                 </div>
                             </div>
@@ -333,6 +337,35 @@
                         reader.readAsDataURL(file);
                     }
                 });
+            }
+
+            // Ajustement INE/Matricule selon le statut
+            const statutSelect      = document.getElementById('statut');
+            const ineRequiredStar   = document.getElementById('ine-required-star');
+            const matriculeRequiredStar = document.getElementById('matricule-required-star');
+            const ineHint           = document.getElementById('ine-hint');
+            const matriculeHint     = document.getElementById('matricule-hint');
+
+            function updateIneMatriculeStatus() {
+                const statut = statutSelect ? statutSelect.value : '';
+                const isOptional = statut === 'Encadreur' || statut === 'Organisateur';
+
+                if (isOptional) {
+                    ineRequiredStar.textContent       = '';
+                    matriculeRequiredStar.textContent  = '';
+                    ineHint.textContent               = 'Optionnel pour ce statut.';
+                    matriculeHint.textContent         = 'Optionnel pour ce statut.';
+                } else {
+                    ineRequiredStar.textContent       = '*';
+                    matriculeRequiredStar.textContent  = '*';
+                    ineHint.textContent               = 'Requis si le matricule est vide.';
+                    matriculeHint.textContent         = 'Requis si l\'INE est vide.';
+                }
+            }
+
+            if (statutSelect) {
+                statutSelect.addEventListener('change', updateIneMatriculeStatus);
+                updateIneMatriculeStatus();
             }
         });
     </script>
