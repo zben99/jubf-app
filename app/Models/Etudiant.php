@@ -10,7 +10,7 @@ class Etudiant extends Model
        use HasFactory;
 
 protected $fillable = [
-    'nom', 'prenom','ine', 'matricule', 'date_naissance', 'telephone',
+    'nom', 'prenom', 'sexe', 'ine', 'matricule', 'date_naissance', 'telephone',
     'university_id', 'statut', 'discipline_id', 'photo_path', 'code'
 ];
 

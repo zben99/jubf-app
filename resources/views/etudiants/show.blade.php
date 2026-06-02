@@ -45,9 +45,10 @@
 
                     @php $s = $etudiant->statut; @endphp
                     <span class="badge rounded-pill px-3 py-2 mb-3
-                        {{ $s === 'Artiste'   ? 'badge-artiste'   : '' }}
-                        {{ $s === 'Sportif'   ? 'badge-sportif'   : '' }}
-                        {{ $s === 'Encadreur' ? 'badge-encadreur' : '' }}">
+                        {{ $s === 'Artiste'      ? 'badge-artiste'      : '' }}
+                        {{ $s === 'Sportif'      ? 'badge-sportif'      : '' }}
+                        {{ $s === 'Encadreur'    ? 'badge-encadreur'    : '' }}
+                        {{ $s === 'Organisateur' ? 'badge-organisateur' : '' }}">
                         {{ $s }}
                     </span>
 
@@ -74,6 +75,10 @@
                         <div class="col-sm-6 col-lg-4">
                             <div class="small text-muted fw-semibold mb-1">Prénom(s)</div>
                             <div>{{ $etudiant->prenom }}</div>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="small text-muted fw-semibold mb-1">Sexe</div>
+                            <div>{{ $etudiant->sexe ?? '—' }}</div>
                         </div>
                         <div class="col-sm-6 col-lg-4">
                             <div class="small text-muted fw-semibold mb-1">Date de naissance</div>
@@ -117,9 +122,10 @@
                         <div class="col-sm-6">
                             <div class="small text-muted fw-semibold mb-1">Statut</div>
                             <span class="badge rounded-pill
-                                {{ $s === 'Artiste'   ? 'badge-artiste'   : '' }}
-                                {{ $s === 'Sportif'   ? 'badge-sportif'   : '' }}
-                                {{ $s === 'Encadreur' ? 'badge-encadreur' : '' }}">
+                                {{ $s === 'Artiste'      ? 'badge-artiste'      : '' }}
+                                {{ $s === 'Sportif'      ? 'badge-sportif'      : '' }}
+                                {{ $s === 'Encadreur'    ? 'badge-encadreur'    : '' }}
+                                {{ $s === 'Organisateur' ? 'badge-organisateur' : '' }}">
                                 {{ $s }}
                             </span>
                         </div>

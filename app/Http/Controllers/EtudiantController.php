@@ -71,12 +71,13 @@ public function index(Request $request)
         $validated = $request->validate([
             'nom'            => 'required|string|max:255',
             'prenom'         => 'required|string|max:255',
+            'sexe'           => 'required|string|in:Masculin,Féminin',
             'ine'            => 'nullable|string|max:255|unique:etudiants,ine|required_without:matricule',
             'matricule'      => 'nullable|string|max:255|unique:etudiants,matricule|required_without:ine',
-            'date_naissance' => 'required_unless:statut,Encadreur|date',
+            'date_naissance' => 'required_unless:statut,Encadreur,Organisateur|date',
             'telephone'      => 'nullable|string|max:20',
             'university_id'  => 'required|exists:universities,id',
-            'statut'         => 'required|string|in:Sportif,Artiste,Encadreur',
+            'statut'         => 'required|string|in:Sportif,Artiste,Encadreur,Organisateur',
             'discipline_id'  => 'required|exists:disciplines,id',
             'photo_path'     => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);

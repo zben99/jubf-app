@@ -54,9 +54,10 @@
                     <label class="form-label fw-semibold small mb-1">Statut</label>
                     <select name="statut" class="form-select form-select-sm">
                         <option value="">Tous</option>
-                        <option value="Artiste"   {{ $statut == 'Artiste'   ? 'selected' : '' }}>Artiste</option>
-                        <option value="Sportif"   {{ $statut == 'Sportif'   ? 'selected' : '' }}>Sportif</option>
-                        <option value="Encadreur" {{ $statut == 'Encadreur' ? 'selected' : '' }}>Encadreur</option>
+                        <option value="Artiste"      {{ $statut == 'Artiste'      ? 'selected' : '' }}>Artiste</option>
+                        <option value="Sportif"      {{ $statut == 'Sportif'      ? 'selected' : '' }}>Sportif</option>
+                        <option value="Encadreur"    {{ $statut == 'Encadreur'    ? 'selected' : '' }}>Encadreur</option>
+                        <option value="Organisateur" {{ $statut == 'Organisateur' ? 'selected' : '' }}>Organisateur</option>
                     </select>
                 </div>
                 <div class="col-md-1 d-flex gap-1">
@@ -132,9 +133,10 @@
                                 <td>
                                     @php $s = $etudiant->statut; @endphp
                                     <span class="badge rounded-pill
-                                        {{ $s === 'Artiste'   ? 'badge-artiste'   : '' }}
-                                        {{ $s === 'Sportif'   ? 'badge-sportif'   : '' }}
-                                        {{ $s === 'Encadreur' ? 'badge-encadreur' : '' }}">
+                                        {{ $s === 'Artiste'      ? 'badge-artiste'      : '' }}
+                                        {{ $s === 'Sportif'      ? 'badge-sportif'      : '' }}
+                                        {{ $s === 'Encadreur'    ? 'badge-encadreur'    : '' }}
+                                        {{ $s === 'Organisateur' ? 'badge-organisateur' : '' }}">
                                         {{ $s }}
                                     </span>
                                 </td>

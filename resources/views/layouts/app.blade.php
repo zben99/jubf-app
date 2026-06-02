@@ -111,9 +111,10 @@
         }
 
         /* ── Badges statut ── */
-        .badge-artiste  { background: #6f42c1; }
-        .badge-sportif  { background: #0d6efd; }
-        .badge-encadreur{ background: #198754; }
+        .badge-artiste      { background: #6f42c1; }
+        .badge-sportif      { background: #0d6efd; }
+        .badge-encadreur    { background: #198754; }
+        .badge-organisateur { background: #fd7e14; }
 
         /* ── Responsive ── */
         @media (max-width: 991px) {

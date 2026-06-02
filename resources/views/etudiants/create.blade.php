@@ -170,6 +170,26 @@
                                 </div>
                             </div>
 
+                            {{-- Sexe --}}
+                            <div class="mb-3">
+                                <label class="form-label">Sexe <span class="text-danger">*</span></label>
+                                <div class="d-flex gap-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input @error('sexe') is-invalid @enderror"
+                                            type="radio" name="sexe" id="sexe_m" value="Masculin"
+                                            {{ old('sexe') === 'Masculin' ? 'checked' : '' }} required>
+                                        <label class="form-check-label" for="sexe_m">Masculin</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input @error('sexe') is-invalid @enderror"
+                                            type="radio" name="sexe" id="sexe_f" value="Féminin"
+                                            {{ old('sexe') === 'Féminin' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="sexe_f">Féminin</label>
+                                    </div>
+                                </div>
+                                @error('sexe')<small class="text-danger">{{ $message }}</small>@enderror
+                            </div>
+
                             {{-- INE / Matricule --}}
                             <div class="row gx-3">
                                 <div class="col-md-6 mb-3">
@@ -230,9 +250,10 @@
                                     <select name="statut" id="statut"
                                         class="form-select @error('statut') is-invalid @enderror" required>
                                         <option value="">-- Sélectionnez --</option>
-                                        <option value="Artiste"    {{ old('statut') == 'Artiste'    ? 'selected' : '' }}>Artiste</option>
-                                        <option value="Sportif"    {{ old('statut') == 'Sportif'    ? 'selected' : '' }}>Sportif</option>
-                                        <option value="Encadreur"  {{ old('statut') == 'Encadreur'  ? 'selected' : '' }}>Encadreur</option>
+                                        <option value="Artiste"      {{ old('statut') == 'Artiste'      ? 'selected' : '' }}>Artiste</option>
+                                        <option value="Sportif"      {{ old('statut') == 'Sportif'      ? 'selected' : '' }}>Sportif</option>
+                                        <option value="Encadreur"    {{ old('statut') == 'Encadreur'    ? 'selected' : '' }}>Encadreur</option>
+                                        <option value="Organisateur" {{ old('statut') == 'Organisateur' ? 'selected' : '' }}>Organisateur</option>
                                     </select>
                                     @error('statut')<small class="text-danger">{{ $message }}</small>@enderror
                                 </div>
