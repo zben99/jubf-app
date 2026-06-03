@@ -77,13 +77,15 @@ Route::middleware(['auth'])->group(function () {
         ->name('settings.toggle-registration');
 });
 
+// ── Suppression candidats (admin + cenou) ────────────────────────────────
+Route::middleware(['auth', 'role:admin,cenou'])->group(function () {
+    Route::delete('/etudiants/{etudiant}', [EtudiantController::class, 'destroy'])->name('etudiants.destroy');
+});
+
 // ── Routes réservées à l'admin uniquement ──────────────────────────────────
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // (universités & disciplines gérées dans le groupe auth ci-dessus)
-
-    // Suppression candidats
-    Route::delete('/etudiants/{etudiant}', [EtudiantController::class, 'destroy'])->name('etudiants.destroy');
 
     // Téléchargements badges & attestations
     Route::get('/badges/export',           [EtudiantController::class, 'badgesExport'])->name('badges.export');

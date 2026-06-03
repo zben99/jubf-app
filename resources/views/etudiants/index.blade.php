@@ -154,6 +154,16 @@
                                             <i class="fas fa-id-badge"></i>
                                         </a>
                                         @endif
+                                        @if(Auth::user()->isAdmin() || Auth::user()->isCenou())
+                                        <form action="{{ route('etudiants.destroy', $etudiant) }}" method="POST"
+                                              onsubmit="return confirm('Supprimer définitivement ce candidat ?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

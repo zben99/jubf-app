@@ -12,10 +12,22 @@
                 </nav>
             </div>
             <div class="d-flex gap-2">
+                @if(Auth::user()->isAdmin())
                 <a href="{{ route('badges.show', $etudiant->id) }}"
                    class="btn btn-danger" target="_blank">
                     <i class="fas fa-id-badge me-1"></i> Badge PDF
                 </a>
+                @endif
+                @if(Auth::user()->isAdmin() || Auth::user()->isCenou())
+                <form action="{{ route('etudiants.destroy', $etudiant) }}" method="POST"
+                      onsubmit="return confirm('Supprimer définitivement ce candidat ?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="fas fa-trash me-1"></i> Supprimer
+                    </button>
+                </form>
+                @endif
                 <a href="{{ route('etudiants.index') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left me-1"></i> Retour
                 </a>
