@@ -168,7 +168,19 @@ public function index(Request $request)
     public function destroy(Etudiant $etudiant)
     {
         $etudiant->delete();
-        return redirect()->route('etudiants.index')->with('success', 'Suppression réussie.');
+        return redirect()->back()->with('success', 'Candidat supprimé avec succès.');
+    }
+
+    public function destroyBulk(Request $request)
+    {
+        $request->validate([
+            'ids'   => 'required|array|min:1',
+            'ids.*' => 'integer|exists:etudiants,id',
+        ]);
+
+        $count = Etudiant::whereIn('id', $request->ids)->delete();
+
+        return redirect()->back()->with('success', $count . ' candidat' . ($count > 1 ? 's supprimés' : ' supprimé') . ' avec succès.');
     }
 
 

@@ -72,6 +72,15 @@
         </div>
     </form>
 
+    {{-- Formulaire suppression groupée (hors tableau) --}}
+    @if(Auth::user()->isAdmin() || Auth::user()->isCenou())
+    <form id="bulk-delete-form" method="POST" action="{{ route('etudiants.destroy-bulk') }}">
+        @csrf
+        @method('DELETE')
+        <div id="bulk-ids"></div>
+    </form>
+    @endif
+
     {{-- Tableau --}}
     <div class="card card-admin">
         <div class="card-header ch-neutral d-flex justify-content-between align-items-center">
@@ -82,17 +91,33 @@
                     <span class="badge bg-danger ms-1">filtrés</span>
                 @endif
             </span>
-            @if(Auth::user()->isAdmin())
-            <a href="{{ route('badges.download.batch') }}" class="btn btn-sm btn-outline-danger">
-                <i class="fas fa-download me-1"></i> Télécharger tous les badges
-            </a>
-            @endif
+            <div class="d-flex align-items-center gap-2">
+                @if(Auth::user()->isAdmin() || Auth::user()->isCenou())
+                <div id="bulk-actions" class="d-none align-items-center gap-2">
+                    <span id="selected-count" class="text-muted small fw-semibold"></span>
+                    <button type="button" onclick="confirmBulkDelete()"
+                            class="btn btn-sm btn-danger">
+                        <i class="fas fa-trash me-1"></i> Supprimer la sélection
+                    </button>
+                </div>
+                @endif
+                @if(Auth::user()->isAdmin())
+                <a href="{{ route('badges.download.batch') }}" class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-download me-1"></i> Télécharger tous les badges
+                </a>
+                @endif
+            </div>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" style="font-size:.85rem;">
                     <thead style="background:#f8f9fb; border-bottom:2px solid #e3e6ea;">
                         <tr>
+                            @if(Auth::user()->isAdmin() || Auth::user()->isCenou())
+                            <th class="px-3 py-3" style="width:42px;">
+                                <input type="checkbox" id="select-all" class="form-check-input" title="Tout sélectionner">
+                            </th>
+                            @endif
                             <th class="px-3 py-3">N°</th>
                             <th>Photo</th>
                             <th>Nom &amp; Prénom</th>
@@ -107,6 +132,12 @@
                     <tbody>
                         @forelse ($etudiants as $i => $etudiant)
                             <tr>
+                                @if(Auth::user()->isAdmin() || Auth::user()->isCenou())
+                                <td class="px-3">
+                                    <input type="checkbox" class="form-check-input row-checkbox"
+                                           value="{{ $etudiant->id }}">
+                                </td>
+                                @endif
                                 <td class="px-3 text-muted">{{ $etudiants->firstItem() + $i }}</td>
                                 <td>
                                     @if ($etudiant->photo_path)
@@ -169,7 +200,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center py-5 text-muted">
+                                <td colspan="{{ (Auth::user()->isAdmin() || Auth::user()->isCenou()) ? '10' : '9' }}"
+                                    class="text-center py-5 text-muted">
                                     <i class="fas fa-search fa-2x mb-2 d-block"></i>
                                     Aucun candidat trouvé.
                                 </td>
@@ -189,4 +221,63 @@
             </div>
         @endif
     </div>
+
+    @if(Auth::user()->isAdmin() || Auth::user()->isCenou())
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectAll   = document.getElementById('select-all');
+        const bulkActions = document.getElementById('bulk-actions');
+        const countLabel  = document.getElementById('selected-count');
+
+        function getChecked() {
+            return document.querySelectorAll('.row-checkbox:checked');
+        }
+
+        function updateUI() {
+            const checked = getChecked();
+            const all     = document.querySelectorAll('.row-checkbox');
+
+            if (checked.length > 0) {
+                bulkActions.classList.remove('d-none');
+                bulkActions.classList.add('d-flex');
+                countLabel.textContent = checked.length + ' sélectionné' + (checked.length > 1 ? 's' : '');
+            } else {
+                bulkActions.classList.add('d-none');
+                bulkActions.classList.remove('d-flex');
+            }
+
+            selectAll.checked       = all.length > 0 && checked.length === all.length;
+            selectAll.indeterminate = checked.length > 0 && checked.length < all.length;
+        }
+
+        selectAll.addEventListener('change', function () {
+            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = this.checked);
+            updateUI();
+        });
+
+        document.querySelectorAll('.row-checkbox').forEach(cb => {
+            cb.addEventListener('change', updateUI);
+        });
+
+        window.confirmBulkDelete = function () {
+            const checked = getChecked();
+            const count   = checked.length;
+            if (count === 0) return;
+            if (!confirm('Supprimer définitivement ' + count + ' candidat' + (count > 1 ? 's' : '') + ' ?')) return;
+
+            const bulkIds = document.getElementById('bulk-ids');
+            bulkIds.innerHTML = '';
+            checked.forEach(cb => {
+                const input   = document.createElement('input');
+                input.type    = 'hidden';
+                input.name    = 'ids[]';
+                input.value   = cb.value;
+                bulkIds.appendChild(input);
+            });
+
+            document.getElementById('bulk-delete-form').submit();
+        };
+    });
+    </script>
+    @endif
 </x-app-layout>

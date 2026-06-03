@@ -79,6 +79,7 @@ Route::middleware(['auth'])->group(function () {
 
 // ── Suppression candidats (admin + cenou) ────────────────────────────────
 Route::middleware(['auth', 'role:admin,cenou'])->group(function () {
+    Route::delete('/etudiants/bulk',       [EtudiantController::class, 'destroyBulk'])->name('etudiants.destroy-bulk');
     Route::delete('/etudiants/{etudiant}', [EtudiantController::class, 'destroy'])->name('etudiants.destroy');
 });
 
