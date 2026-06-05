@@ -72,49 +72,49 @@ public function index(Request $request)
         $isEncadreurOuOrganisateur = in_array($request->input('statut'), ['Encadreur', 'Organisateur']);
 
         $validated = $request->validate([
-            ‘nom’            => ‘required|string|max:255’,
-            ‘prenom’         => ‘required|string|max:255’,
-            ‘sexe’           => ‘required|string|in:Masculin,Féminin’,
-            ‘ine’            => [
-                ‘nullable’, ‘string’, ‘max:255’,
-                Rule::unique(‘etudiants’, ‘ine’)->whereNull(‘deleted_at’),
-                Rule::when(! $isEncadreurOuOrganisateur, [‘required_without:matricule’]),
+            'nom'            => 'required|string|max:255',
+            'prenom'         => 'required|string|max:255',
+            'sexe'           => 'required|string|in:Masculin,Féminin',
+            'ine'            => [
+                'nullable', 'string', 'max:255',
+                Rule::unique('etudiants', 'ine')->whereNull('deleted_at'),
+                Rule::when(! $isEncadreurOuOrganisateur, ['required_without:matricule']),
             ],
-            ‘matricule’      => [
-                ‘nullable’, ‘string’, ‘max:255’,
-                Rule::unique(‘etudiants’, ‘matricule’)->whereNull(‘deleted_at’),
-                Rule::when(! $isEncadreurOuOrganisateur, [‘required_without:ine’]),
+            'matricule'      => [
+                'nullable', 'string', 'max:255',
+                Rule::unique('etudiants', 'matricule')->whereNull('deleted_at'),
+                Rule::when(! $isEncadreurOuOrganisateur, ['required_without:ine']),
             ],
-            ‘date_naissance’ => ‘required_unless:statut,Encadreur,Organisateur|date’,
-            ‘telephone’      => ‘nullable|string|max:20’,
-            ‘university_id’  => ‘required|exists:universities,id’,
-            ‘statut’         => ‘required|string|in:Sportif,Artiste,Encadreur,Organisateur’,
-            ‘discipline_id’  => ‘required|exists:disciplines,id’,
-            ‘photo_path’     => ‘required|image|mimes:jpg,jpeg,png|max:2048’,
+            'date_naissance' => 'required_unless:statut,Encadreur,Organisateur|date',
+            'telephone'      => 'nullable|string|max:20',
+            'university_id'  => 'required|exists:universities,id',
+            'statut'         => 'required|string|in:Sportif,Artiste,Encadreur,Organisateur',
+            'discipline_id'  => 'required|exists:disciplines,id',
+            'photo_path'     => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         // 2) Chercher un enregistrement existant (actif ou supprimé) sur (nom, prenom, date_naissance, telephone)
         $existing = Etudiant::withTrashed()
-            ->where(‘nom’, $validated[‘nom’])
-            ->where(‘prenom’, $validated[‘prenom’])
-            ->where(‘date_naissance’, $validated[‘date_naissance’])
-            ->where(‘telephone’, $validated[‘telephone’])
+            ->where('nom', $validated['nom'])
+            ->where('prenom', $validated['prenom'])
+            ->where('date_naissance', $validated['date_naissance'])
+            ->where('telephone', $validated['telephone'])
             ->first();
 
         if ($existing && ! $existing->trashed()) {
             return back()
                 ->withInput()
                 ->withErrors([
-                    ‘doublon’ => ‘Un(e) étudiant(e) portant le même nom, prénom et date de naissance existe déjà.’
+                    'doublon' => 'Un(e) étudiant(e) portant le même nom, prénom et date de naissance existe déjà.'
                 ]);
         }
 
-        // 3) Stockage du fichier uploadé dans ‘public/photos_etudiants’
-        if ($request->hasFile(‘photo_path’)) {
-            $file = $request->file(‘photo_path’);
-            $filename = time() . ‘_’ . $file->getClientOriginalName();
-            $file->move(public_path(‘storage/photos_etudiants’), $filename);
-            $validated[‘photo_path’] = ‘photos_etudiants/’ . $filename;
+        // 3) Stockage du fichier uploadé dans 'public/photos_etudiants'
+        if ($request->hasFile('photo_path')) {
+            $file = $request->file('photo_path');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('storage/photos_etudiants'), $filename);
+            $validated['photo_path'] = 'photos_etudiants/' . $filename;
         }
 
         // 4) Si le candidat avait été supprimé → le restaurer avec les nouvelles données
@@ -123,24 +123,24 @@ public function index(Request $request)
             $existing->update($validated);
 
             return redirect()
-                ->route(‘etudiants.create’)
-                ->with(‘success’, "Réinscription réussie ! Votre code d’inscription : <strong>{$existing->code}</strong>.");
+                ->route('etudiants.create')
+                ->with('success', "Réinscription réussie ! Votre code d'inscription : <strong>{$existing->code}</strong>.");
         }
 
-        // 5) Génération d’un code numérique de 4 caractères unique
+        // 5) Génération d'un code numérique de 4 caractères unique
         do {
-            $codeUnique = str_pad(random_int(0, 9999), 4, ‘0’, STR_PAD_LEFT);
-        } while (Etudiant::where(‘code’, $codeUnique)->exists());
+            $codeUnique = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+        } while (Etudiant::where('code', $codeUnique)->exists());
 
-        $validated[‘code’] = $codeUnique;
+        $validated['code'] = $codeUnique;
 
         // 6) Création du nouvel étudiant
         Etudiant::create($validated);
 
         // 7) Redirection avec message de succès (affiche le code)
         return redirect()
-            ->route(‘etudiants.create’)
-            ->with(‘success’, "Inscription réussie ! Votre code d’inscription : <strong>{$codeUnique}</strong>.");
+            ->route('etudiants.create')
+            ->with('success', "Inscription réussie ! Votre code d'inscription : <strong>{$codeUnique}</strong>.");
     }
 
 
@@ -250,7 +250,7 @@ public function downloadBadgesBatch()
         ->setOption(['dpi' => 300, 'defaultFont' => 'sans-serif']);
 
     // Fusionner les deux PDF pour faire du recto-verso
-    // En Laravel/DomPDF pur, ce n’est pas possible directement
+    // En Laravel/DomPDF pur, ce n'est pas possible directement
     // Alternative : stocker chaque PDF, les fusionner avec `setOptions(['enable-javascript' => true])` ou via package externe (ex: `mikehaertl/pdftk` ou `fpdi`)
 
     // Temporaire : retourner les deux PDF séparément
@@ -266,7 +266,7 @@ public function telechargerBadgesold()
 {
     ini_set('memory_limit', '512M');
 set_time_limit(180);
-    $etudiants = Etudiant::where('universite', 'Université Saint Thomas d’Aquin')
+    $etudiants = Etudiant::where('universite', 'Université Saint Thomas d\'Aquin')
     ->get();
 
     $html = view('etudiants.badges_recto_verso', compact('etudiants'))->render();
@@ -304,7 +304,7 @@ public function telechargerBadges222()
         $slug = Str::slug($universite);
         $folderPath = storage_path("app/public/badges/$slug/");
 
-        // Créer le dossier s’il n’existe pas
+        // Créer le dossier s'il n'existe pas
         if (!file_exists($folderPath)) {
             mkdir($folderPath, 0777, true);
         }
