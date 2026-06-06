@@ -230,7 +230,7 @@ public function showBadge1($id)
 
  $pdf = Pdf::loadView('etudiants.template', compact('etudiant'))
             ->setOption(['dpi' => 300, 'defaultFont' => 'sans-serif'])
-          ->setPaper([0, 0, 283.5, 391.0], 'portrait');
+          ->setPaper([0, 0, 297.6, 419.5], 'portrait'); // 105mm × 148mm
          // ->setOption('defaultFont', 'sans-serif');
 
     return $pdf->download('badge_' . $etudiant->code . '.pdf');
@@ -339,7 +339,7 @@ public function telechargerBadges222()
 
 public function badgesExport()
 {
-    $universities = University::withCount('etudiants')
+    $universities = University::withCount(['etudiants as etudiants_count' => fn($q) => $q->where('statut', '!=', 'Organisateur')])
         ->having('etudiants_count', '>', 0)
         ->orderBy('name')
         ->get();
@@ -349,9 +349,27 @@ public function badgesExport()
         ->orderBy('name')
         ->get();
 
-    $totalCandidats = Etudiant::count();
+    $totalCandidats    = Etudiant::count();
+    $totalOrganisateurs = Etudiant::where('statut', 'Organisateur')->count();
 
-    return view('etudiants.badges_export', compact('universities', 'disciplines', 'totalCandidats'));
+    return view('etudiants.badges_export', compact('universities', 'disciplines', 'totalCandidats', 'totalOrganisateurs'));
+}
+
+public function telechargerBadgesOrganisateurs()
+{
+    ini_set('memory_limit', '512M');
+    set_time_limit(300);
+
+    $etudiants = Etudiant::with(['university', 'discipline'])
+        ->where('statut', 'Organisateur')
+        ->orderBy('nom')
+        ->get()
+        ->chunk(4);
+
+    $html = view('etudiants.badges_recto', compact('etudiants'))->render();
+    $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'portrait');
+
+    return $pdf->download('badges_organisateurs.pdf');
 }
 
 public function telechargerBadges()
@@ -359,7 +377,7 @@ public function telechargerBadges()
     ini_set('memory_limit', '512M');
     set_time_limit(300);
 
-    $etudiants = Etudiant::with(['university', 'discipline'])->get()->chunk(2);
+    $etudiants = Etudiant::with(['university', 'discipline'])->get()->chunk(4);
 
     $html = view('etudiants.badges_recto', compact('etudiants'))->render();
     $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'portrait');
@@ -375,9 +393,10 @@ public function telechargerBadgesByUniversity(int $universityId)
     $university = University::findOrFail($universityId);
     $etudiants  = Etudiant::with(['university', 'discipline'])
         ->where('university_id', $universityId)
+        ->where('statut', '!=', 'Organisateur')
         ->orderBy('nom')
         ->get()
-        ->chunk(2);
+        ->chunk(4);
 
     $html = view('etudiants.badges_recto', compact('etudiants'))->render();
     $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'portrait');
@@ -396,7 +415,7 @@ public function telechargerBadgesByDiscipline(int $disciplineId)
         ->where('discipline_id', $disciplineId)
         ->orderBy('nom')
         ->get()
-        ->chunk(2);
+        ->chunk(4);
 
     $html = view('etudiants.badges_recto', compact('etudiants'))->render();
     $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'portrait');
@@ -408,7 +427,7 @@ public function telechargerBadgesByDiscipline(int $disciplineId)
 public function showBadge(int $id)
 {
     $etudiant  = Etudiant::with(['university', 'discipline'])->findOrFail($id);
-    $etudiants = collect([$etudiant])->chunk(2);
+    $etudiants = collect([$etudiant])->chunk(4);
 
     $html = view('etudiants.badges_recto', compact('etudiants'))->render();
     $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'portrait');

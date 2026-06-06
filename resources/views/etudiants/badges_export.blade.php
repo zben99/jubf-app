@@ -13,22 +13,28 @@
 
     {{-- Statistiques rapides --}}
     <div class="row g-3 mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card card-admin text-center py-3">
                 <div class="fs-2 fw-bold text-danger">{{ $totalCandidats }}</div>
                 <div class="text-muted small">Total candidats</div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card card-admin text-center py-3">
                 <div class="fs-2 fw-bold" style="color:#2980b9;">{{ $universities->count() }}</div>
                 <div class="text-muted small">Universités avec participants</div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card card-admin text-center py-3">
                 <div class="fs-2 fw-bold" style="color:#27ae60;">{{ $disciplines->count() }}</div>
                 <div class="text-muted small">Disciplines avec participants</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-admin text-center py-3">
+                <div class="fs-2 fw-bold" style="color:#8e44ad;">{{ $totalOrganisateurs }}</div>
+                <div class="text-muted small">Organisateurs</div>
             </div>
         </div>
     </div>
@@ -137,4 +143,29 @@
         </div>
 
     </div>
+
+    {{-- ── BADGES ORGANISATEURS ── --}}
+    <div class="row g-4 mt-0">
+        <div class="col-12">
+            <div class="card card-admin">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <span><i class="fas fa-id-badge me-2"></i> Badges organisateurs</span>
+                    <span class="badge rounded-pill" style="background:#8e44ad;">{{ $totalOrganisateurs }} organisateur{{ $totalOrganisateurs > 1 ? 's' : '' }}</span>
+                </div>
+                <div class="card-body">
+                    @if ($totalOrganisateurs > 0)
+                        <p class="text-muted small mb-3">
+                            Télécharger les badges de tous les membres avec le statut <strong>Organisateur</strong> (maquette comité d'organisation).
+                        </p>
+                        <a href="{{ route('badges.organisateurs') }}" class="btn btn-primary">
+                            <i class="fas fa-file-pdf me-1"></i> Télécharger les badges organisateurs (PDF)
+                        </a>
+                    @else
+                        <p class="text-muted mb-0">Aucun organisateur enregistré.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
 </x-app-layout>
