@@ -106,7 +106,7 @@
                 @if (isset($membres) && isset($membres[$i - 1]))
                     @php $m = $membres[$i - 1]; @endphp
                     @if (!empty($m->photo_path))
-                        <img src="file://{{ storage_path('app/public/' . $m->photo_path) }}" class="photo-co"
+                        <img src="file://{{ public_path('storage/' . $m->photo_path) }}" class="photo-co"
                             alt="Photo">
                     @endif
                     <div class="val-nom-co">{{ strtoupper($m->nom) }}</div>

@@ -152,7 +152,7 @@
                     <div class="badge pos-{{ $loop->iteration }}"
                          style="background-image: url('file://{{ public_path('images/badges/badge_comite.png') }}');">
                         @if (!empty($etudiant->photo_path))
-                            <img src="file://{{ storage_path('app/public/' . $etudiant->photo_path) }}"
+                            <img src="file://{{ public_path('storage/' . $etudiant->photo_path) }}"
                                  class="photo-co" alt="Photo">
                         @endif
                         <div class="val-nom-co">{{ strtoupper($etudiant->nom) }}</div>
@@ -163,7 +163,7 @@
                     <div class="badge pos-{{ $loop->iteration }}"
                          style="background-image: url('file://{{ public_path('images/badges/badge_participant.png') }}');">
                         @if (!empty($etudiant->photo_path))
-                            <img src="file://{{ storage_path('app/public/' . $etudiant->photo_path) }}"
+                            <img src="file://{{ public_path('storage/' . $etudiant->photo_path) }}"
                                  class="photo" alt="Photo">
                         @endif
                         <div class="val-nom">{{ strtoupper($etudiant->nom) }}</div>

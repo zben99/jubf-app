@@ -133,7 +133,7 @@
     @if ($etudiant->statut === 'Organisateur')
         <div class="badge" style="background-image: url('{{ public_path('images/badges/badge_comite.png') }}');">
             @if (!empty($etudiant->photo_path))
-                <img src="file://{{ storage_path('app/public/' . $etudiant->photo_path) }}"
+                <img src="file://{{ public_path('storage/' . $etudiant->photo_path) }}"
                      class="photo-co" alt="Photo">
             @endif
             <div class="val-nom-co">{{ strtoupper($etudiant->nom) }}</div>
@@ -143,7 +143,7 @@
     @else
         <div class="badge" style="background-image: url('{{ public_path('images/badges/badge_participant.png') }}');">
             @if (!empty($etudiant->photo_path))
-                <img src="file://{{ storage_path('app/public/' . $etudiant->photo_path) }}"
+                <img src="file://{{ public_path('storage/' . $etudiant->photo_path) }}"
                      class="photo" alt="Photo">
             @endif
             <div class="val-nom">{{ strtoupper($etudiant->nom) }}</div>
