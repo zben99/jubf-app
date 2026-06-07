@@ -144,6 +144,26 @@
 
     </div>
 
+    {{-- ── EXPORT EXCEL ── --}}
+    <div class="row g-4 mt-0">
+        <div class="col-12">
+            <div class="card card-admin">
+                <div class="card-header">
+                    <i class="fas fa-file-excel me-2" style="color:#1d6f42;"></i> Export Excel — listes par université
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">
+                        Génère un fichier <strong>.xlsx</strong> avec un onglet par université.
+                        Dans chaque onglet, les participants sont regroupés par discipline puis triés par nom.
+                    </p>
+                    <a href="{{ route('etudiants.export-excel') }}" class="btn btn-success">
+                        <i class="fas fa-file-excel me-1"></i> Télécharger le fichier Excel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- ── BADGES ORGANISATEURS ── --}}
     <div class="row g-4 mt-0">
         <div class="col-12">

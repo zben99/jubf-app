@@ -337,6 +337,71 @@ public function telechargerBadges222()
 
 
 
+public function exportExcel()
+{
+    ini_set('memory_limit', '256M');
+
+    $universities = University::orderBy('name')
+        ->whereHas('etudiants')
+        ->get();
+
+    $writer = new \App\Services\XlsxWriter();
+
+    foreach ($universities as $university) {
+        $etudiants = Etudiant::with('discipline')
+            ->where('university_id', $university->id)
+            ->orderBy('discipline_id')
+            ->orderBy('nom')
+            ->orderBy('prenom')
+            ->get();
+
+        if ($etudiants->isEmpty()) {
+            continue;
+        }
+
+        $rows = [];
+
+        // En-tête université
+        $rows[] = [['bold' => true, 'value' => $university->name], '', '', '', '', '', ''];
+        $rows[] = [
+            ['bold' => true, 'value' => 'N°'],
+            ['bold' => true, 'value' => 'Nom'],
+            ['bold' => true, 'value' => 'Prénom'],
+            ['bold' => true, 'value' => 'Discipline'],
+            ['bold' => true, 'value' => 'Statut'],
+            ['bold' => true, 'value' => 'INE / Matricule'],
+            ['bold' => true, 'value' => 'Téléphone'],
+        ];
+
+        $n = 1;
+        $currentDiscipline = null;
+
+        foreach ($etudiants as $etudiant) {
+            $discName = $etudiant->discipline->name ?? '';
+
+            if ($currentDiscipline !== null && $currentDiscipline !== $discName) {
+                $rows[] = ['', '', '', '', '', '', ''];
+            }
+            $currentDiscipline = $discName;
+
+            $rows[] = [
+                $n++,
+                strtoupper($etudiant->nom),
+                ucfirst(strtolower($etudiant->prenom)),
+                $discName,
+                $etudiant->statut,
+                $etudiant->ine ?? $etudiant->matricule ?? '',
+                $etudiant->telephone ?? '',
+            ];
+        }
+
+        $sheetName = $university->acronym ?: $university->name;
+        $writer->addSheet($sheetName, $rows);
+    }
+
+    return $writer->download('etudiants_par_universite_' . date('Ymd') . '.xlsx');
+}
+
 public function badgesExport()
 {
     $universities = University::withCount(['etudiants as etudiants_count' => fn($q) => $q->where('statut', '!=', 'Organisateur')])
@@ -402,7 +467,7 @@ public function telechargerBadgesByUniversity(int $universityId)
     $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'portrait');
     $slug = \Illuminate\Support\Str::slug($university->acronym ?: $university->name);
 
-    return $pdf->download("badges_{$slug}.pdf");
+    return $pdf->stream("badges_{$slug}.pdf");
 }
 
 public function telechargerBadgesByDiscipline(int $disciplineId)

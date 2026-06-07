@@ -90,6 +90,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // Téléchargements badges & attestations
     Route::get('/badges/export',           [EtudiantController::class, 'badgesExport'])->name('badges.export');
+    Route::get('/etudiants/export-excel',  [EtudiantController::class, 'exportExcel'])->name('etudiants.export-excel');
     Route::get('/badges/all',              [EtudiantController::class, 'telechargerBadges'])->name('badges.all');
     Route::get('/badges/organisateurs',    [EtudiantController::class, 'telechargerBadgesOrganisateurs'])->name('badges.organisateurs');
     Route::get('/badges/university/{id}',  [EtudiantController::class, 'telechargerBadgesByUniversity'])->name('badges.by-university');
