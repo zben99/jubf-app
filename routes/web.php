@@ -70,7 +70,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Candidats : lecture seule
     Route::get('/etudiants',              [EtudiantController::class, 'index'])->name('etudiants.index');
-    Route::get('/etudiants/{etudiant}',   [EtudiantController::class, 'show'])->name('etudiants.show');
+    Route::get('/etudiants/{etudiant}',   [EtudiantController::class, 'show'])->name('etudiants.show')->whereNumber('etudiant');
 
     // Configuration (toggle inscriptions)
     Route::post('/settings/toggle-registration', [SettingController::class, 'toggleRegistration'])
@@ -80,7 +80,7 @@ Route::middleware(['auth'])->group(function () {
 // ── Suppression candidats (admin + cenou) ────────────────────────────────
 Route::middleware(['auth', 'role:admin,cenou'])->group(function () {
     Route::delete('/etudiants/bulk',       [EtudiantController::class, 'destroyBulk'])->name('etudiants.destroy-bulk');
-    Route::delete('/etudiants/{etudiant}', [EtudiantController::class, 'destroy'])->name('etudiants.destroy');
+    Route::delete('/etudiants/{etudiant}', [EtudiantController::class, 'destroy'])->name('etudiants.destroy')->whereNumber('etudiant');
 });
 
 // ── Routes réservées à l'admin uniquement ──────────────────────────────────
