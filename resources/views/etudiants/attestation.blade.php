@@ -31,7 +31,7 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 8mm;
-            font-family: "Times New Roman", Times, serif;
+            font-family: "DejaVu Sans", sans-serif;
             font-weight: bold;
             color: #000;
             text-align: center;
@@ -44,7 +44,7 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 5mm;
-            font-family: "Times New Roman", Times, serif;
+            font-family: "DejaVu Sans", sans-serif;
             color: #000;
             text-align: center;
             white-space: nowrap;
@@ -57,7 +57,7 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 7mm;
-            font-family: "Times New Roman", Times, serif;
+            font-family: "DejaVu Sans", sans-serif;
             font-weight: bold;
             color: #000;
             text-align: center;
@@ -73,10 +73,8 @@
                 $universite = trim($attestation->university->name ?? '');
                 $debut = \Illuminate\Support\Str::lower(\Illuminate\Support\Str::ascii($universite));
 
-                if (\Illuminate\Support\Str::startsWith($debut, 'ecole')) {
+                if (\Illuminate\Support\Str::startsWith($debut, ['universite', 'ecole'])) {
                     $prefixeUniv = "de l'";
-                } elseif (\Illuminate\Support\Str::startsWith($debut, 'centre universitaire')) {
-                    $prefixeUniv = 'du ';
                 } elseif (\Illuminate\Support\Str::startsWith($debut, 'centre universitaire')) {
                     $prefixeUniv = 'du ';
                 } else {
@@ -85,7 +83,7 @@
             @endphp
 
             <div class="nom-complet">
-                {{ strtoupper($attestation->nom) }} {{ ucwords(strtolower($attestation->prenom)) }}
+                {{ mb_strtoupper($attestation->nom, 'UTF-8') }} {{ mb_convert_case($attestation->prenom, MB_CASE_TITLE, 'UTF-8') }}
             </div>
 
             <div class="universite">
@@ -93,7 +91,7 @@
             </div>
 
             <div class="statut">
-                {{ ucwords(strtolower($attestation->statut)) }}
+                {{ mb_convert_case($attestation->statut, MB_CASE_TITLE, 'UTF-8') }}
             </div>
         </div>
     @endforeach
