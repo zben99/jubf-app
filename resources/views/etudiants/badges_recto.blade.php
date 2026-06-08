@@ -53,10 +53,10 @@
 
         .photo {
             position: absolute;
-            top: 52mm;
-            left: 11mm;
-            width: 26mm;
-            height: 60mm;
+            top: 68.2mm;
+            left: 12mm;
+            width: 28.4mm;
+            height: 34mm;
             object-fit: cover;
         }
 
@@ -64,7 +64,7 @@
             position: absolute;
             top: 63mm;
             left: 57mm;
-            font-size: 3.5mm;
+            font-size: 4mm;
             font-weight: bold;
             color: #fff;
             max-width: 40mm;
@@ -72,7 +72,7 @@
 
         .val-prenom {
             position: absolute;
-            top: 72mm;
+            top: 72.5mm;
             left: 69mm;
             font-size: 3.5mm;
             font-weight: bold;
@@ -82,9 +82,9 @@
 
         .val-universite {
             position: absolute;
-            top: 81mm;
-            left: 67mm;
-            font-size: 2.8mm;
+            top: 83mm;
+            left: 69mm;
+            font-size: 3.1mm;
             font-weight: bold;
             color: #fff;
             max-width: 30mm;
@@ -93,9 +93,9 @@
 
         .val-statut {
             position: absolute;
-            top: 91mm;
-            left: 60mm;
-            font-size: 3.5mm;
+            top: 92mm;
+            left: 62mm;
+            font-size: 4mm;
             font-weight: bold;
             color: #fff;
             max-width: 37mm;
@@ -103,9 +103,9 @@
 
         .val-discipline {
             position: absolute;
-            top: 100mm;
+            top: 102mm;
             left: 69mm;
-            font-size: 2.8mm;
+            font-size: 3mm;
             font-weight: bold;
             color: #fff;
             max-width: 28mm;
@@ -135,9 +135,9 @@
 
         .val-prenom-co {
             position: absolute;
-            top: 103mm;
+            top: 103.3mm;
             left: 49mm;
-            font-size: 5mm;
+            font-size: 4mm;
             font-weight: bold;
             color: #222;
             max-width: 42mm;
