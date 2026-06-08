@@ -17,34 +17,51 @@
 
         .page {
             position: relative;
-            width: 100%;
-            height: 100%;
+            width: 297mm;
+            height: 210mm;
             page-break-after: always;
             background: url('file://{{ public_path('images/attestation.png') }}') no-repeat center center;
-            background-size: cover;
+            background-size: 297mm 210mm;
         }
 
+        /* Nom complet + université dans la zone vide sous "ATTESTE QUE :" */
         .nom-complet {
             position: absolute;
-            top: 345px;
+            top: 59mm;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 22px;
+            font-size: 6mm;
             font-family: "Times New Roman", Times, serif;
             font-weight: bold;
             color: #000;
             text-align: center;
+            white-space: nowrap;
         }
 
+        .universite {
+            position: absolute;
+            top: 67mm;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4.5mm;
+            font-family: "Times New Roman", Times, serif;
+            color: #000;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* Statut dans la zone vide après "en tant que" */
         .statut {
             position: absolute;
-            top: 430px;
-            left: 46.5%;
+            top: 111mm;
+            left: 50%;
             transform: translateX(-50%);
-            font-size: 22px;
+            font-size: 5.5mm;
             font-family: "Times New Roman", Times, serif;
             font-weight: bold;
             color: #000;
+            text-align: center;
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -53,38 +70,29 @@
     @foreach ($etudiants as $attestation)
         <div class="page">
             @php
-
                 $universite = trim($attestation->university->name ?? '');
-                $universiteFormatee = $universite ?: 'N/A';
+                $debut = \Illuminate\Support\Str::lower(\Illuminate\Support\Str::ascii($universite));
 
-                // Normaliser pour comparaison
-                $debut = Str::lower(Str::ascii($universite)); // ignore accents
-
-                if (Str::startsWith($debut, 'universite')) {
-                    $prefixe = 'de l’';
-                } elseif (Str::startsWith($debut, 'centre universitaire')) {
-                    $prefixe = 'du ';
+                if (\Illuminate\Support\Str::startsWith($debut, 'universite')) {
+                    $prefixeUniv = "de l'";
+                } elseif (\Illuminate\Support\Str::startsWith($debut, 'centre universitaire')) {
+                    $prefixeUniv = 'du ';
                 } else {
-                    $prefixe = 'de l’établissement';
+                    $prefixeUniv = 'de ';
                 }
             @endphp
 
             <div class="nom-complet">
-                {{ strtoupper($attestation->nom) }} {{ ucwords(strtolower($attestation->prenom)) }} –
-                {{ $prefixe }} {{ $universiteFormatee }}
+                {{ strtoupper($attestation->nom) }} {{ ucwords(strtolower($attestation->prenom)) }}
             </div>
 
-            @php
-                $statut = ucwords(strtolower($attestation->statut));
-                $voyelles = ['a', 'e', 'i', 'o', 'u', 'y'];
-                $lettreInitiale = strtolower(substr($statut, 0, 1));
-                $prefixe = in_array($lettreInitiale, $voyelles) ? 'qu’' : 'que ';
-            @endphp
+            <div class="universite">
+                {{ $prefixeUniv }}{{ $universite ?: 'N/A' }}
+            </div>
 
             <div class="statut">
-                {{ $prefixe }}{{ $statut }}.
+                {{ ucwords(strtolower($attestation->statut)) }}
             </div>
-
         </div>
     @endforeach
 </body>

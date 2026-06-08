@@ -73,8 +73,12 @@
                                         </td>
                                         <td class="text-center">
                                             <a href="{{ route('badges.by-university', $university->id) }}"
-                                               class="btn btn-sm btn-danger" title="Télécharger les badges">
-                                                <i class="fas fa-file-pdf me-1"></i> PDF
+                                               class="btn btn-sm btn-danger mb-1" title="Badges PDF">
+                                                <i class="fas fa-id-card"></i> Badges
+                                            </a>
+                                            <a href="{{ route('attestations.by-university', $university->id) }}"
+                                               class="btn btn-sm btn-warning" title="Attestations PDF" style="color:#fff;">
+                                                <i class="fas fa-certificate"></i> Att.
                                             </a>
                                         </td>
                                     </tr>
@@ -86,9 +90,12 @@
                         </table>
                     </div>
                 </div>
-                <div class="card-footer bg-white border-top">
-                    <a href="{{ route('badges.all') }}" class="btn btn-danger w-100">
-                        <i class="fas fa-download me-1"></i> Télécharger TOUS les badges
+                <div class="card-footer bg-white border-top d-flex gap-2">
+                    <a href="{{ route('badges.all') }}" class="btn btn-danger flex-fill">
+                        <i class="fas fa-id-card me-1"></i> Tous les badges
+                    </a>
+                    <a href="{{ route('attestations.all') }}" class="btn btn-warning flex-fill" style="color:#fff;">
+                        <i class="fas fa-certificate me-1"></i> Toutes les attestations
                     </a>
                 </div>
             </div>

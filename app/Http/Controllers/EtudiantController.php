@@ -402,6 +402,43 @@ public function exportExcel()
     return $writer->download('etudiants_par_universite_' . date('Ymd') . '.xlsx');
 }
 
+public function telechargerAttestations()
+{
+    ini_set('memory_limit', '512M');
+    set_time_limit(300);
+
+    $etudiants = Etudiant::with('university')
+        ->orderBy('nom')
+        ->orderBy('prenom')
+        ->get();
+
+    $html = view('etudiants.attestation', compact('etudiants'))->render();
+    $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'landscape')
+               ->setOption(['dpi' => 150, 'defaultFont' => 'serif']);
+
+    return $pdf->download('attestations_senac2026.pdf');
+}
+
+public function telechargerAttestationsByUniversity(int $universityId)
+{
+    ini_set('memory_limit', '512M');
+    set_time_limit(300);
+
+    $university = University::findOrFail($universityId);
+    $etudiants  = Etudiant::with('university')
+        ->where('university_id', $universityId)
+        ->orderBy('nom')
+        ->orderBy('prenom')
+        ->get();
+
+    $html = view('etudiants.attestation', compact('etudiants'))->render();
+    $pdf  = Pdf::loadHTML($html)->setPaper('A4', 'landscape')
+               ->setOption(['dpi' => 150, 'defaultFont' => 'serif']);
+
+    $slug = \Illuminate\Support\Str::slug($university->acronym ?: $university->name);
+    return $pdf->download("attestations_{$slug}.pdf");
+}
+
 public function badgesExport()
 {
     $universities = University::withCount(['etudiants as etudiants_count' => fn($q) => $q->where('statut', '!=', 'Organisateur')])

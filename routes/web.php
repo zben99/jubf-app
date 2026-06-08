@@ -98,6 +98,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/badges/show/{id}',        [EtudiantController::class, 'showBadge'])->name('badges.show');
     Route::get('/badges/download/batch',   [EtudiantController::class, 'telechargerBadges'])->name('badges.download.batch');
     Route::get('/badges/download/batch1',  [EtudiantController::class, 'telechargerBadges1'])->name('badges.download.batch1');
+
+    // Attestations
+    Route::get('/attestations/all',              [EtudiantController::class, 'telechargerAttestations'])->name('attestations.all');
+    Route::get('/attestations/university/{id}',  [EtudiantController::class, 'telechargerAttestationsByUniversity'])->name('attestations.by-university');
 });
 
 // ── Inscription publique (sans auth) ──────────────────────────────────────
