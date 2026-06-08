@@ -27,10 +27,10 @@
         /* Nom complet + université dans la zone vide sous "ATTESTE QUE :" */
         .nom-complet {
             position: absolute;
-            top: 59mm;
+            top: 72mm;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 6mm;
+            font-size: 8mm;
             font-family: "Times New Roman", Times, serif;
             font-weight: bold;
             color: #000;
@@ -40,10 +40,10 @@
 
         .universite {
             position: absolute;
-            top: 67mm;
+            top: 82mm;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 4.5mm;
+            font-size: 5mm;
             font-family: "Times New Roman", Times, serif;
             color: #000;
             text-align: center;
@@ -53,10 +53,10 @@
         /* Statut dans la zone vide après "en tant que" */
         .statut {
             position: absolute;
-            top: 111mm;
+            top: 107mm;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 5.5mm;
+            font-size: 7mm;
             font-family: "Times New Roman", Times, serif;
             font-weight: bold;
             color: #000;
@@ -73,8 +73,10 @@
                 $universite = trim($attestation->university->name ?? '');
                 $debut = \Illuminate\Support\Str::lower(\Illuminate\Support\Str::ascii($universite));
 
-                if (\Illuminate\Support\Str::startsWith($debut, 'universite')) {
+                if (\Illuminate\Support\Str::startsWith($debut, 'ecole')) {
                     $prefixeUniv = "de l'";
+                } elseif (\Illuminate\Support\Str::startsWith($debut, 'centre universitaire')) {
+                    $prefixeUniv = 'du ';
                 } elseif (\Illuminate\Support\Str::startsWith($debut, 'centre universitaire')) {
                     $prefixeUniv = 'du ';
                 } else {

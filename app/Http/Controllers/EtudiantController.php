@@ -408,8 +408,10 @@ public function telechargerAttestations()
     set_time_limit(300);
 
     $etudiants = Etudiant::with('university')
-        ->orderBy('nom')
-        ->orderBy('prenom')
+      ->where('statut', '!=', 'Organisateur')
+      ->orderBy('nom')
+      ->orderBy('prenom')
+
         ->get();
 
     $html = view('etudiants.attestation', compact('etudiants'))->render();
@@ -436,7 +438,7 @@ public function telechargerAttestationsByUniversity(int $universityId)
                ->setOption(['dpi' => 150, 'defaultFont' => 'serif']);
 
     $slug = \Illuminate\Support\Str::slug($university->acronym ?: $university->name);
-    return $pdf->download("attestations_{$slug}.pdf");
+    return $pdf->stream("attestations_{$slug}.pdf");
 }
 
 public function badgesExport()
